@@ -1,0 +1,101 @@
+{
+  "version": "MODULE_G1_0_CAL_V1_TRAINABLE_DEFERRED_FAMILY_CALIBRATOR",
+  "model_type": "numpy_softmax_regression",
+  "targets": [
+    "promote_to_probable_line",
+    "keep_deferred",
+    "reserve_for_future_non_line"
+  ],
+  "feature_names": [
+    "component_pixel_count_log",
+    "family_distance",
+    "distance_term",
+    "anchor_score",
+    "family_strength_score",
+    "component_colinearity_score",
+    "component_run_score",
+    "microstructure_score",
+    "mixed_contact_score",
+    "conflict_contact_score",
+    "bbox_width_log",
+    "bbox_height_log",
+    "major_length_log",
+    "minor_length_log",
+    "bbox_area_log",
+    "fill_ratio",
+    "aspect_ratio_log",
+    "slenderness_score",
+    "orientation_horizontal",
+    "orientation_vertical",
+    "g1_0_association_score",
+    "compact_symbol_risk"
+  ],
+  "promote_threshold": 0.47,
+  "train_config": {
+    "version": "MODULE_G1_0_CAL_V1_TRAINABLE_DEFERRED_FAMILY_CALIBRATOR",
+    "seed": 3420,
+    "epochs": 5000,
+    "learning_rate": 0.08,
+    "l2": 0.001,
+    "target_validation_recall": 0.995,
+    "threshold_min": 0.05,
+    "threshold_max": 0.95,
+    "threshold_step": 0.005,
+    "g1_0_association_max_distance_px": 5.0,
+    "baseline_all_false_promotion_count": 12,
+    "baseline_holdout_false_promotion_count": 4,
+    "baseline_all_recall": 1.0,
+    "baseline_holdout_recall": 1.0
+  },
+  "train_info": {
+    "class_counts": {
+      "promote_to_probable_line": 412,
+      "keep_deferred": 336,
+      "reserve_for_future_non_line": 430
+    },
+    "class_weights": {
+      "promote_to_probable_line": 0.9530744336569579,
+      "keep_deferred": 1.1686507936507937,
+      "reserve_for_future_non_line": 0.9131782945736434
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 1.1120728918403704
+      },
+      {
+        "epoch": 10,
+        "loss": 0.5120730691231241
+      },
+      {
+        "epoch": 50,
+        "loss": 0.21384273379826485
+      },
+      {
+        "epoch": 100,
+        "loss": 0.1269487019814589
+      },
+      {
+        "epoch": 500,
+        "loss": 0.0417940434513103
+      },
+      {
+        "epoch": 1000,
+        "loss": 0.030752314333694353
+      },
+      {
+        "epoch": 5000,
+        "loss": 0.02400796664201188
+      }
+    ]
+  },
+  "truth_usage_policy": "Truth labels are used only for training, validation threshold selection, and evaluation.",
+  "runtime_prohibitions": {
+    "does_not_modify_g1_0": true,
+    "does_not_modify_v3_4_1": true,
+    "does_not_modify_v3_4_2": true,
+    "does_not_create_final_geometry": true,
+    "no_ocr": true,
+    "no_clinical_semantics": true
+  }
+}
