@@ -1,0 +1,71 @@
+# Python/runtime noise
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local OS/editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Project rule: datasets and generated evidence stay out of GitHub
+# The repository is for clean runnable code, contracts, manifests, and docs.
+datasets/
+dataset/
+data/
+raw_data/
+training_data/
+fixtures_large/
+
+# Generated outputs and historical experiment folders
+outputs/
+results/
+runs/
+experiments/
+artifacts/
+logs/
+
+# Heavy/generated geometric evidence maps and masks
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.parquet
+
+# Generated visual/result assets
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.bmp
+*.gif
+*.webp
+*.mp4
+*.mov
+*.avi
+
+# Archives/bundles should be promoted deliberately, not accidentally
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+
+# Allow normal source/documentation surfaces
+!requirements.txt
+!modules/**/*.py
+!contracts/**/*.md
+!docs/**/*.md
+!manifests/**/*.md
