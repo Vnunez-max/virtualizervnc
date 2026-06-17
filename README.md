@@ -2,6 +2,17 @@
 
 Clean repository surface for the synergic geometric virtualizer.
 
+This repository currently promotes one functional subsystem of the larger
+virtualizer:
+
+```text
+Geometric Evidence Unit
+```
+
+That unit organizes observed mask support into traceable geometric evidence
+domains. It is not the complete virtualizer and does not produce final
+tables, cells, OCR, symbols, clinical semantics, or final virtual objects.
+
 The project is organized as a cumulative geometric evidence chain:
 
 ```text
@@ -21,6 +32,40 @@ tools/      verification helpers
 
 Datasets, generated outputs, masks, visual audits and historical experiment
 folders are intentionally excluded from GitHub.
+
+## Scope Boundary
+
+The promoted modules are a geometric evidence engine inside the full
+virtualizer project.
+
+They are responsible for:
+
+```text
+residual evidence
+purity-gated observed support
+line-study support
+deferred support
+future-module pools
+traceable fusion maps
+```
+
+They are not responsible for:
+
+```text
+final line/table/cell construction
+OCR or text recognition
+symbol interpretation
+clinical/domain semantics
+page-level virtual object export
+```
+
+Reserved non-line or ambiguous support remains useful evidence for future
+subsystems. It must not be discarded merely because it is not part of the
+current line-study surface.
+
+See:
+
+- `docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md`
 
 ## Trainability Boundary
 

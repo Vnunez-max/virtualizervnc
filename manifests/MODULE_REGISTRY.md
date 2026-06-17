@@ -5,7 +5,13 @@ Date: 2026-06-18
 
 ## Purpose
 
-This registry organizes the modules as a cumulative geometric evidence unit, not as independent scripts.
+This registry organizes the modules as a cumulative geometric evidence unit,
+not as independent scripts.
+
+The registered modules are a subsystem of the larger virtualizer. They form
+the current `Geometric Evidence Unit`, whose job is to organize observed mask
+support into traceable evidence domains. They are not the complete
+virtualizer.
 
 Critical rule:
 
@@ -18,6 +24,39 @@ No module may gain interpretation by losing geometric traceability.
 ```text
 V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 ```
+
+## Product Boundary
+
+This unit can promote, reserve, defer, or fuse observed support for geometric
+study. It must not silently take responsibility for the full virtualizer.
+
+Owned by this unit:
+
+```text
+residual evidence
+purity-gated geometric support
+line-study support
+deferred support
+future-module pool
+component-family line association
+deferred simple lineality evidence
+traceable fused support maps
+```
+
+Reserved for other virtualizer subsystems:
+
+```text
+final line/table/cell objects
+OCR/text recognition
+symbol/annotation interpretation
+page layout semantics
+clinical/domain meaning
+final export objects
+```
+
+Scope reference:
+
+- `docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md`
 
 ## Module Families
 

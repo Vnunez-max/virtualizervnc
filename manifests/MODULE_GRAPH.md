@@ -7,6 +7,10 @@ Date: 2026-06-18
 
 The system is cumulative. Each layer receives geometric evidence from previous layers and may refine interpretation only under traceability constraints.
 
+This graph represents the current `Geometric Evidence Unit`, a subsystem of
+the larger virtualizer. It is the evidence-preparation and line/deferred
+reasoning surface, not the whole virtualizer.
+
 ```text
 V3.4.2
   -> C1.0
@@ -166,6 +170,10 @@ X2.0 is a fusion layer, not a replacement for upstream evidence generation
 ```text
 upstream maps -> observed universe -> stratified domains -> calibrated deferred decisions -> fused study support
 ```
+
+This data flow ends at auditable support maps. It does not create final
+tables, cells, OCR labels, symbols, clinical semantics, or exported virtual
+objects.
 
 No module may bypass:
 

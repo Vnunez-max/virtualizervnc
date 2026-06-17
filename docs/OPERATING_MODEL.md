@@ -2,6 +2,18 @@
 
 This repository stores the clean, transportable engineering surface of the geometric virtualizer project.
 
+The current promoted code is a functional subsystem of that project, not the
+whole virtualizer.
+
+Preferred subsystem name:
+
+```text
+Geometric Evidence Unit
+```
+
+It organizes observed mask support into auditable evidence domains for line
+study, deferred reasoning, and future-module reservation.
+
 ## Current Source Of Truth
 
 Primary working evidence remains in the local Codex workspace until artifacts are promoted here:
@@ -24,6 +36,41 @@ Slack is not a technical source of truth.
 
 ```text
 No module may gain interpretation by losing geometric traceability.
+```
+
+## Scope Boundary
+
+The current unit owns:
+
+```text
+observed support organization
+residual evidence stratification
+geometric purity gates
+line-study/deferred/future-pool partitioning
+component-family deferred scoring
+simple deferred lineality auditing
+traceable evidence fusion
+```
+
+The current unit does not own:
+
+```text
+final virtualizer object construction
+table/cell reconstruction
+OCR or text recognition
+symbol recognition
+clinical/domain interpretation
+page-level export semantics
+```
+
+Evidence that is not line-study support remains part of the larger
+virtualizer. It should be reserved with traceability for later subsystems, not
+silently discarded or forced into a line class.
+
+Detailed scope reference:
+
+```text
+docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md
 ```
 
 ## What Belongs In This Repo

@@ -1,7 +1,11 @@
 # Modules
 
-This directory stores the clean, versioned module surface of the synergic
-geometric virtualizer.
+This directory stores the clean, versioned module surface of the current
+Geometric Evidence Unit inside the larger synergic geometric virtualizer.
+
+These modules organize observed mask support into traceable geometric evidence
+domains. They are not the complete virtualizer and do not construct final
+tables, cells, OCR, symbols, page semantics, or virtualized output objects.
 
 The modules are organized by family:
 
