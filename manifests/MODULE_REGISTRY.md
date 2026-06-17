@@ -21,15 +21,40 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 
 ## Module Families
 
-| Family | Role | Main contribution | Output status |
-| --- | --- | --- | --- |
-| V3.4.2 | residual evidence stratifier | Separates residual evidence while preserving geometric traceability | frozen upstream |
-| C1.x | residual geometry validators | Tests whether residual evidence has local or collective geometric coherence | complement |
-| U1.x | purity gates | Filters support toward clean grid-compatible geometric evidence | calibration layer |
-| L1.x | observed support stratification | Separates line-study, non-line/future pool, mixed and deferred support | core modular unit |
-| G1.x | deferred family association | Associates deferred components with candidate line families and calibrated promotion decisions | trainable/calibrated layer |
-| D1.x | deferred lineality complement | Rechecks deferred support for simple observed lineality without creating final geometry | complementary auditor |
-| X2.0 | single-script fusion | Fuses upstream maps and D1 evidence into auditable line-study and future-pool support | experimental transport unit |
+| Family | Role | Main contribution | Output status | Trainability status |
+| --- | --- | --- | --- | --- |
+| V3.4.2 | residual evidence stratifier | Separates residual evidence while preserving geometric traceability | frozen upstream | frozen |
+| C1.x | residual geometry validators | Tests whether residual evidence has local or collective geometric coherence | complement | fixed-rule |
+| U1.x | purity gates | Filters support toward clean grid-compatible geometric evidence | calibration layer | U1.1 fixed-rule; U1.1-CAL calibrable |
+| L1.x | observed support stratification | Separates line-study, non-line/future pool, mixed and deferred support | core modular unit | L1.1 and L1.2-CAL calibrable; L1.0/L1.2 fixed-rule |
+| G1.x | deferred family association | Associates deferred components with candidate line families and calibrated promotion decisions | trainable/calibrated layer | G1.0-CAL V1 trainable; G1.0 fixed-rule feature/resolver layer |
+| D1.x | deferred lineality complement | Rechecks deferred support for simple observed lineality without creating final geometry | complementary auditor | D1.0 fixed-rule; D1.1 future calibrable candidate |
+| X2.0 | single-script fusion | Fuses upstream maps and D1 evidence into auditable line-study and future-pool support | experimental transport unit | fusion/orchestrator, not trainable by default |
+
+## Trainability Boundary
+
+The full system is not a single black-box trainable model. It is a modular geometric evidence pipeline with selected trainable/calibrable layers.
+
+Strictly trainable today:
+
+```text
+G1.0-CAL V1
+```
+
+Calibrable today:
+
+```text
+U1.1-CAL
+L1.1
+L1.2-CAL
+```
+
+Fixed/frozen/fusion modules are not trainable unless a future contract changes their status.
+
+Authoritative references:
+
+- `manifests/TRAINABLE_MODULES.md`
+- `contracts/TRAINABILITY_CONTRACT.md`
 
 ## Individual Modules
 
@@ -37,12 +62,15 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 
 - Name: residual evidence stratifier.
 - Status: frozen; must not be modified.
+- Trainability: frozen.
 - Role: source of residual evidence after prior geometry processing.
 - Traceability requirement: every interpretation must remain tied to observed pixels and source maps.
 
 ### C1.0
 
 - Name: individual residual evidence hypothesis validator.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: tests isolated residual candidates.
 - Synergy: provides candidate-level context before purity and domain stratification.
 - Forbidden: final line/table/cell creation.
@@ -50,6 +78,8 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 ### C1.1
 
 - Name: collective residual evidence hypothesis validator.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: examines where residual evidence acts collectively.
 - Synergy: prepares residual evidence for downstream purity and stratification.
 - Forbidden: replacing observed geometry with inferred geometry.
@@ -57,72 +87,104 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 ### U1.0
 
 - Name: clean grid geometry purity gate.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: validates cleaner geometric support.
 - Synergy: constrains later L1/G1 decisions to cleaner evidence.
 
 ### U1.1
 
 - Name: subobject clean grid geometry purity gate.
+- Status: fixed-rule.
+- Trainability: not trainable directly; calibrated by U1.1-CAL.
 - Role: acts on sub-support, not whole-mask semantics.
 - Synergy: improves purity before deferred resolution.
 
 ### U1.1-CAL
 
 - Name: geometric hysteresis/calibration support.
+- Status: calibrable.
+- Trainability: calibrable thresholds/hysteresis, not black-box training.
 - Role: stabilizes purity thresholds.
 - Synergy: prevents brittle threshold decisions from contaminating L1/G1.
 
 ### L1.0
 
 - Name: observed support domain stratifier.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: creates first line-study/future/deferred partition.
 - Synergy: defines the observed-support universe for later modules.
 
 ### L1.1
 
 - Name: observed support domain calibration layer.
+- Status: calibrable.
+- Trainability: calibrable domain thresholds/parameters.
 - Role: improves L1.0 domain assignments.
 - Synergy: reduces accidental promotion and prepares L1.2.
 
 ### L1.2
 
 - Name: deferred domain subsupport resolver.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: resolves part of deferred support.
 - Synergy: gives G1 and D1 a narrower, more meaningful deferred domain.
 
 ### L1.2-CAL
 
 - Name: deferred line-like fragment calibrator.
+- Status: calibrable.
+- Trainability: calibrable deferred line-like thresholds.
 - Role: calibrates line-like fragments inside deferred support.
 - Synergy: reduces unresolved line support before G1/D1.
 
 ### G1.0
 
 - Name: deferred line family resolver.
+- Status: fixed-rule feature/resolver layer.
+- Trainability: not the learner itself; supplies traceable features for G1.0-CAL.
 - Role: evaluates deferred component plus candidate family.
 - Synergy: starts trainable family association without runtime truth labels.
 
 ### G1.0-CAL V1
 
 - Name: trainable deferred family calibrator.
+- Status: trainable.
+- Trainability: current main trainable module.
 - Role: calibrates G1 decisions using deferred-only dataset evidence.
 - Synergy: improves promote/keep/reserve decisions while preserving component-family traceability.
 
 ### D1.0
 
 - Name: simple deferred lineality auditor.
+- Status: fixed-rule.
+- Trainability: not trainable today.
 - Role: checks clear horizontal/vertical observed lineality that G1/L1 may leave deferred.
 - Synergy: complements G1 by applying simple reality-first line criteria.
 
 ### D1.1
 
 - Name: deferred linear role classifier.
+- Status: fixed-rule today; future calibrable candidate.
+- Trainability: not trainable until a D1-CAL contract exists.
 - Role: separates line-like deferred evidence into tentative roles.
 - Synergy: prevents all linearity from being interpreted as structural line.
+
+### Unit Full Model
+
+- Name: unit orchestrator.
+- Status: fusion/orchestrator.
+- Trainability: not trainable.
+- Role: applies module chain.
+- Forbidden: becoming a black-box target.
 
 ### X2.0
 
 - Name: geometric evidence fusion single script.
+- Status: fusion/orchestrator.
+- Trainability: not trainable by default.
 - Role: transportable experimental fusion of upstream evidence plus D1-style deferred lineality.
 - Synergy: produces fused line-study support and future-module pool, not final geometry.
 
