@@ -38,7 +38,7 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 ### G1.x
 
 - `modules/g1/module_g1_0_deferred_line_family_resolver.py`
-- `modules/g1/module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py`
+- `modules/g1/module_g1_0_cal_v1_apply_trainable_calibrator.py`
 
 ### D1.x
 
@@ -47,7 +47,7 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 
 ### Unit
 
-- `modules/unit/module_unit_full_model_v1_apply_to_test3_3.py`
+- `modules/unit/module_unit_full_model_v1_apply.py`
 
 ### X2.0
 

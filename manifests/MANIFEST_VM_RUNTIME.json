@@ -3,16 +3,14 @@
   "date": "2026-06-15",
   "scope": "runtime code only",
   "includes": {
-    "modules": 11,
-    "contracts": 9,
+    "modules": 15,
+    "contracts": 15,
     "models": [
       "models/g1_0_cal_v1_deferred_family/model_config.json",
       "models/g1_0_cal_v1_deferred_family/feature_scaler.json",
       "models/g1_0_cal_v1_deferred_family/coefficients.csv"
     ],
-    "docs": [
-      "docs/ARCHITECTURE_D1_COMPLEMENTO_LINEA_OBSERVADA_DEFERRED_V1.md"
-    ],
+    "docs": 8,
     "tools": [
       "tools/verify_vm_runtime.py"
     ]
@@ -24,7 +22,7 @@
     "audit result folders",
     "test result images",
     "V3.4.1 frozen",
-    "V3.4.2 implementation"
+    "V3.4.2 modifications"
   ],
   "critical_rule": "No module may gain interpretation by losing geometric traceability."
 }

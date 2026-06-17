@@ -533,10 +533,10 @@ def run(
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--g1-cal-dir", default="outputs/g1_0_cal_v1_trainable_calibrator_test3_3_unit/test3_3")
-    ap.add_argument("--unit-dir", default="outputs/unit_full_model_v1_applied_test3_2_test3_3/test3_3")
-    ap.add_argument("--out", default="outputs/d1_0_deferred_simple_linearity_auditor_test3_3/test3_3")
-    ap.add_argument("--sample-id", default="test3.3")
+    ap.add_argument("--g1-cal-dir", required=True)
+    ap.add_argument("--unit-dir", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--sample-id", default="sample")
     ap.add_argument("--band-radius", type=int, default=1)
     ap.add_argument("--max-gap", type=int, default=9)
     ap.add_argument("--min-span", type=int, default=18)

@@ -20,8 +20,8 @@ EXPECTED_MODULES = [
     "l1/module_l1_2_deferred_domain_subsupport_resolver.py",
     "l1/module_l1_2_cal_deferred_line_like_fragment_calibrator.py",
     "g1/module_g1_0_deferred_line_family_resolver.py",
-    "g1/module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py",
-    "unit/module_unit_full_model_v1_apply_to_test3_3.py",
+    "g1/module_g1_0_cal_v1_apply_trainable_calibrator.py",
+    "unit/module_unit_full_model_v1_apply.py",
     "d1/module_d1_0_deferred_simple_linearity_auditor.py",
     "d1/module_d1_1_deferred_linear_role_classifier.py",
     "module_x2_0_geometric_evidence_fusion_single_script.py",
@@ -44,6 +44,12 @@ FORBIDDEN_FILENAMES = {
     "dataset_audit.json",
     "summary.json",
     "contract_audit.json",
+}
+
+FORBIDDEN_CURRENT_STRINGS = {
+    "module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py",
+    "module_unit_full_model_v1_apply_to_test3_3.py",
+    "unit_full_model_v1_applied_test3_2_test3_3",
 }
 
 
@@ -71,6 +77,45 @@ def main() -> int:
         source = path.read_text(encoding="utf-8")
         compile(source, str(path), "exec")
     print(f"PASS compilacion modules: {len(EXPECTED_MODULES)}")
+
+    stale_refs: list[str] = []
+    current_docs = [
+        ROOT / "README.md",
+        ROOT / "docs" / "README_VM_RUNTIME.md",
+        ROOT / "manifests" / "MODULE_REGISTRY.md",
+        ROOT / "manifests" / "TRAINABLE_MODULES.md",
+    ]
+    for path in current_docs:
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for needle in FORBIDDEN_CURRENT_STRINGS:
+            if needle in text:
+                stale_refs.append(f"{path.relative_to(ROOT)}: {needle}")
+    if stale_refs:
+        return fail(f"referencias actuales obsoletas: {stale_refs}")
+    print("PASS referencias actuales sin entrypoints test-especificos obsoletos")
+
+    manifest_path = ROOT / "manifests" / "MANIFEST_VM_RUNTIME.json"
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        includes = manifest.get("includes", {})
+        module_count = len(list((ROOT / "modules").rglob("*.py")))
+        contract_count = len(list((ROOT / "contracts").rglob("*.md")))
+        doc_count = len(list((ROOT / "docs").rglob("*.md")))
+        expected_counts = {
+            "modules": module_count,
+            "contracts": contract_count,
+            "docs": doc_count,
+        }
+        actual_counts = {
+            "modules": includes.get("modules"),
+            "contracts": includes.get("contracts"),
+            "docs": includes.get("docs"),
+        }
+        if actual_counts != expected_counts:
+            return fail(f"MANIFEST_VM_RUNTIME counts obsoletos: {actual_counts} != {expected_counts}")
+        print("PASS MANIFEST_VM_RUNTIME counts alineados")
 
     model_dir = ROOT / "models" / "g1_0_cal_v1_deferred_family"
     missing_model_files = [name for name in EXPECTED_MODEL_FILES if not (model_dir / name).exists()]

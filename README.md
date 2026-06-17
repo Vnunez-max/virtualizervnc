@@ -66,6 +66,7 @@ current line-study surface.
 See:
 
 - `docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md`
+- `docs/UNIT_MODEL_ERROR_CLEANUP_20260618.md`
 
 ## Trainability Boundary
 

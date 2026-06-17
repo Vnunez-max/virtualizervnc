@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Assemble the full unit model application on a named test sample.
+Assemble the full unit model application on a named sample.
 
 This script does not rerun or modify upstream modules. It reads the approved
 U/L/G outputs plus the G1.0-CAL V1 unit adapter, then writes a single auditable
@@ -275,7 +275,7 @@ def legend_image(out_path: Path) -> None:
     img.save(out_path)
 
 
-def run(paths: Dict[str, Path], out_dir: Path, sample_id: str = "test3.3") -> Dict[str, Any]:
+def run(paths: Dict[str, Path], out_dir: Path, sample_id: str = "sample") -> Dict[str, Any]:
     out_dir = Path(out_dir)
     ensure_dir(out_dir / "maps")
     ensure_dir(out_dir / "visuals")
@@ -416,15 +416,15 @@ def run(paths: Dict[str, Path], out_dir: Path, sample_id: str = "test3.3") -> Di
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--u1-1-dir", default="outputs/u1_1_subobject_clean_grid_geometry_purity_gate_test3_3_unit/test3_3")
-    ap.add_argument("--l1-0-dir", default="outputs/l1_0_observed_support_domain_stratifier_test3_3/test3_3")
-    ap.add_argument("--l1-1-dir", default="outputs/l1_1_observed_support_domain_calibration_layer_test3_3/test3_3")
-    ap.add_argument("--l1-2-dir", default="outputs/l1_2_deferred_domain_subsupport_resolver_test3_3/test3_3")
-    ap.add_argument("--l1-2-cal-dir", default="outputs/l1_2_cal_deferred_line_like_fragment_calibrator_test3_3/test3_3")
-    ap.add_argument("--g1-0-dir", default="outputs/g1_0_deferred_line_family_resolver_test3_3/test3_3")
-    ap.add_argument("--g1-0-cal-v1-dir", default="outputs/g1_0_cal_v1_trainable_calibrator_test3_3_unit/test3_3")
-    ap.add_argument("--out", default="outputs/unit_full_model_v1_test3_3/test3_3")
-    ap.add_argument("--sample-id", default="test3.3")
+    ap.add_argument("--u1-1-dir", required=True)
+    ap.add_argument("--l1-0-dir", required=True)
+    ap.add_argument("--l1-1-dir", required=True)
+    ap.add_argument("--l1-2-dir", required=True)
+    ap.add_argument("--l1-2-cal-dir", required=True)
+    ap.add_argument("--g1-0-dir", required=True)
+    ap.add_argument("--g1-0-cal-v1-dir", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--sample-id", default="sample")
     return ap.parse_args()
 
 

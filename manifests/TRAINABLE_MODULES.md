@@ -37,10 +37,10 @@ No module may gain interpretation by losing geometric traceability.
 | L1.x | `module_l1_2_deferred_domain_subsupport_resolver.py` | fixed-rule | none by default | no | Resolves deferred support with explicit rules. |
 | L1.x | `module_l1_2_cal_deferred_line_like_fragment_calibrator.py` | calibrable | line-like deferred thresholds | no | Calibrates deferred line-like fragments. |
 | G1.x | `module_g1_0_deferred_line_family_resolver.py` | fixed-rule | feature generation/scoring audit | no | Creates component-family feature space; model is in G1.0-CAL. |
-| G1.x | `module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py` | trainable | component + family candidate classifier/calibrator | no | Main trainable module. Runtime uses saved model assets only. |
+| G1.x | `module_g1_0_cal_v1_apply_trainable_calibrator.py` | trainable | component + family candidate classifier/calibrator | no | Main trainable module. Runtime uses saved model assets only. |
 | D1.x | `module_d1_0_deferred_simple_linearity_auditor.py` | fixed-rule | future D1-CAL possible | no | Reality-first simple lineality auditor. |
 | D1.x | `module_d1_1_deferred_linear_role_classifier.py` | fixed-rule/calibrable candidate | future role calibration possible | no | Can become calibrable with contract; currently fixed role classifier. |
-| Unit | `module_unit_full_model_v1_apply_to_test3_3.py` | fusion/orchestrator | none | no | Applies module chain; must not become black-box training target. |
+| Unit | `module_unit_full_model_v1_apply.py` | fusion/orchestrator | none | no | Applies module chain; must not become black-box training target. |
 | X2.0 | `module_x2_0_geometric_evidence_fusion_single_script.py` | fusion/orchestrator | none by default | no | Experimental single-script fusion; consumes module evidence, not truth labels. |
 
 ## Current Trainable Set

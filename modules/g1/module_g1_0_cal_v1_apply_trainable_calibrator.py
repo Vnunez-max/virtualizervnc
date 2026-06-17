@@ -3,7 +3,7 @@
 """
 Apply G1.0-CAL V1 trainable calibrator to an existing G1.0 run.
 
-This is a unit-level evaluation adapter for a named test sample. It reads the trained
+This is a unit-level evaluation adapter for a named sample. It reads the trained
 G1.0-CAL V1 model and G1.0 deferred-family associations, then writes calibrated
 outputs in a separate directory. It does not modify G1.0 runtime artifacts and
 does not create final geometry.
@@ -324,6 +324,7 @@ def changed_crop_sheet(
     out_path: Path,
     action_image: Image.Image,
     predictions: Sequence[Dict[str, Any]],
+    sample_id: str,
     margin: int = 28,
 ) -> None:
     changed = [
@@ -365,14 +366,14 @@ def changed_crop_sheet(
     rows = int(math.ceil(len(tiles) / cols))
     sheet = Image.new("RGB", (cols * 240, rows * 230 + 34), "white")
     d = ImageDraw.Draw(sheet)
-    d.text((8, 10), "G1.0-CAL V1 changed associations on test3.3", fill=(0, 0, 0), font=font(16))
+    d.text((8, 10), f"G1.0-CAL V1 changed associations on {sample_id}", fill=(0, 0, 0), font=font(16))
     for idx, tile in enumerate(tiles):
         sheet.paste(tile, ((idx % cols) * 240, 34 + (idx // cols) * 230))
     ensure_dir(out_path.parent)
     sheet.save(out_path)
 
 
-def run(g1_run_dir: Path, model_dir: Path, out_dir: Path, sample_id: str = "test3.3") -> Dict[str, Any]:
+def run(g1_run_dir: Path, model_dir: Path, out_dir: Path, sample_id: str = "sample") -> Dict[str, Any]:
     g1_run_dir = Path(g1_run_dir)
     model_dir = Path(model_dir)
     out_dir = Path(out_dir)
@@ -588,7 +589,7 @@ def run(g1_run_dir: Path, model_dir: Path, out_dir: Path, sample_id: str = "test
     d.rectangle((0, 0, action_img.width, 30), fill=(255, 255, 255, 235))
     d.text((8, 8), f"G1.0-CAL V1 actions on {sample_id} candidates", fill=(0, 0, 0), font=font(11))
     action_img.save(out_dir / "visuals" / "02_g1_0_cal_v1_actions_overlay.png")
-    changed_crop_sheet(out_dir / "visuals" / "03_g1_0_cal_v1_changed_association_crops.png", action_img, predictions)
+    changed_crop_sheet(out_dir / "visuals" / "03_g1_0_cal_v1_changed_association_crops.png", action_img, predictions, sample_id)
 
     print(
         json.dumps(
@@ -614,7 +615,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--g1-run-dir", required=True)
     ap.add_argument("--model-dir", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--sample-id", default="test3.3")
+    ap.add_argument("--sample-id", default="sample")
     return ap.parse_args()
 
 

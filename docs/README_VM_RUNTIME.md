@@ -28,10 +28,11 @@ imagenes de resultados historicos
 __pycache__
 .DS_Store
 V3.4.1 congelado
-V3.4.2 implementado
+modificaciones de V3.4.2
 ```
 
-V3.4.1 y V3.4.2 no se incluyen ni se modifican.
+V3.4.1 no se incluye. V3.4.2 puede estar incluido como modulo upstream
+congelado para runtime, pero no debe modificarse.
 
 ## Regla critica
 
@@ -83,7 +84,7 @@ D1.1 opcional sobre D1.0
 El adaptador G1.0-CAL V1 usa el modelo incluido:
 
 ```bash
-python modules/module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py \
+python modules/g1/module_g1_0_cal_v1_apply_trainable_calibrator.py \
   --g1-run-dir /ruta/a/g1_0_run \
   --model-dir models/g1_0_cal_v1_deferred_family \
   --out /ruta/a/g1_0_cal_v1_out \
@@ -93,7 +94,7 @@ python modules/module_g1_0_cal_v1_apply_trainable_calibrator_to_test3_3_unit.py 
 El ensamblador de unidad completa requiere las salidas U/L/G ya generadas:
 
 ```bash
-python modules/module_unit_full_model_v1_apply_to_test3_3.py \
+python modules/unit/module_unit_full_model_v1_apply.py \
   --u1-1-dir /ruta/a/u1_1 \
   --l1-0-dir /ruta/a/l1_0 \
   --l1-1-dir /ruta/a/l1_1 \
@@ -108,7 +109,7 @@ python modules/module_unit_full_model_v1_apply_to_test3_3.py \
 D1.0 es complementario: solo analiza deferred y nombra linea observada sin crear geometria final.
 
 ```bash
-python modules/module_d1_0_deferred_simple_linearity_auditor.py \
+python modules/d1/module_d1_0_deferred_simple_linearity_auditor.py \
   --g1-cal-dir /ruta/a/g1_0_cal_v1_out \
   --unit-dir /ruta/a/unit_out \
   --out /ruta/a/d1_0_out \
@@ -118,7 +119,7 @@ python modules/module_d1_0_deferred_simple_linearity_auditor.py \
 D1.1 es secundario: clasifica roles de la linea observada por D1.0, sin imponer rejilla y sin crear geometria final.
 
 ```bash
-python modules/module_d1_1_deferred_linear_role_classifier.py \
+python modules/d1/module_d1_1_deferred_linear_role_classifier.py \
   --d1-dir /ruta/a/d1_0_out \
   --unit-dir /ruta/a/unit_out \
   --out /ruta/a/d1_1_out \

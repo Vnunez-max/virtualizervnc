@@ -723,10 +723,10 @@ def run(d1_dir: Path, unit_dir: Path, out_dir: Path, sample_id: str, cfg: Config
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--d1-dir", default="outputs/d1_0_deferred_simple_linearity_auditor_test3_3/test3_3")
-    ap.add_argument("--unit-dir", default="outputs/unit_full_model_v1_applied_test3_2_test3_3/test3_3")
-    ap.add_argument("--out", default="outputs/d1_1_deferred_linear_role_classifier_test3_3/test3_3")
-    ap.add_argument("--sample-id", default="test3.3")
+    ap.add_argument("--d1-dir", required=True)
+    ap.add_argument("--unit-dir", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--sample-id", default="sample")
     return ap.parse_args()
 
 
