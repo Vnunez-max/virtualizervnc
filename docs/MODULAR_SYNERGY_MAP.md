@@ -3,7 +3,7 @@
 The project is not a flat list of scripts. It is a cumulative geometric evidence system.
 
 ```text
-V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
+V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0 -> X3.0
 ```
 
 ## Layers
@@ -53,6 +53,16 @@ Complementary deferred observed-line analysis.
 ### X2.0
 
 Real single-script fusion layer. It consumes upstream maps and fuses evidence into line-study support and future-pool support.
+
+### X3.0
+
+Trainable-aware complete Geometric Evidence Unit runtime.
+
+- consumes UNIT, G1.0-CAL V1, D1.0 and D1.1 outputs
+- verifies readable trainable model assets
+- writes trainable influence maps
+- preserves source-bit traceability
+- remains fusion/orchestrator, not a trainable monolith
 
 ## Core Principle
 

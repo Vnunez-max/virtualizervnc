@@ -24,6 +24,7 @@ EXPECTED_MODULES = [
     "unit/module_unit_full_model_v1_apply.py",
     "d1/module_d1_0_deferred_simple_linearity_auditor.py",
     "d1/module_d1_1_deferred_linear_role_classifier.py",
+    "x3/module_x3_0_trainable_geometric_evidence_unit.py",
     "module_x2_0_geometric_evidence_fusion_single_script.py",
 ]
 

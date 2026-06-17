@@ -79,6 +79,7 @@ G1.0-CAL V1
 UNIT
 D1.0 opcional sobre deferred
 D1.1 opcional sobre D1.0
+X3.0 integracion entrenable-aware
 ```
 
 El adaptador G1.0-CAL V1 usa el modelo incluido:
@@ -123,6 +124,19 @@ python modules/d1/module_d1_1_deferred_linear_role_classifier.py \
   --d1-dir /ruta/a/d1_0_out \
   --unit-dir /ruta/a/unit_out \
   --out /ruta/a/d1_1_out \
+  --sample-id sample_id
+```
+
+X3.0 integra la unidad funcional con G1.0-CAL V1 y D1, escribiendo mapas de influencia entrenable sin convertir toda la unidad en modelo black-box.
+
+```bash
+python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
+  --unit-dir /ruta/a/unit_out \
+  --g1-cal-dir /ruta/a/g1_0_cal_v1_out \
+  --d1-0-dir /ruta/a/d1_0_out \
+  --d1-1-dir /ruta/a/d1_1_out \
+  --model-dir models/g1_0_cal_v1_deferred_family \
+  --out /ruta/a/x3_out \
   --sample-id sample_id
 ```
 

@@ -27,6 +27,7 @@ V3.4.2
   -> D1.0
   -> D1.1
   -> X2.0
+  -> X3.0
 ```
 
 ## Dependency Levels
@@ -165,10 +166,32 @@ Rule:
 X2.0 is a fusion layer, not a replacement for upstream evidence generation
 ```
 
+### Level 7: trainable-aware complete evidence unit
+
+Module:
+
+```text
+X3.0
+```
+
+Role:
+
+```text
+combine the functional unit, active trainable G1.0-CAL evidence, D1 evidence,
+trainable influence maps and source-bit traceability
+```
+
+Rule:
+
+```text
+X3.0 can consume trained/calibrated outputs, but cannot become a trainable
+monolith or create final virtualized geometry
+```
+
 ## Data Flow Contract
 
 ```text
-upstream maps -> observed universe -> stratified domains -> calibrated deferred decisions -> fused study support
+upstream maps -> observed universe -> stratified domains -> calibrated deferred decisions -> fused study support -> trainable-aware X3 evidence
 ```
 
 This data flow ends at auditable support maps. It does not create final

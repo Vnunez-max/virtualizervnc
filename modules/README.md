@@ -17,12 +17,19 @@ l1/      observed support stratification and deferred resolution
 g1/      deferred line-family association and calibration
 d1/      complementary deferred simple-line analysis
 unit/    unit-level orchestrator entrypoints
+x3/      trainable-aware complete evidence-unit fusion
 ```
 
 The experimental X2.0 single-script fusion layer is also kept at:
 
 ```text
 modules/module_x2_0_geometric_evidence_fusion_single_script.py
+```
+
+The X3.0 trainable-aware evidence unit is kept at:
+
+```text
+modules/x3/module_x3_0_trainable_geometric_evidence_unit.py
 ```
 
 Critical rule:

@@ -42,6 +42,7 @@ No module may gain interpretation by losing geometric traceability.
 | D1.x | `module_d1_1_deferred_linear_role_classifier.py` | fixed-rule/calibrable candidate | future role calibration possible | no | Can become calibrable with contract; currently fixed role classifier. |
 | Unit | `module_unit_full_model_v1_apply.py` | fusion/orchestrator | none | no | Applies module chain; must not become black-box training target. |
 | X2.0 | `module_x2_0_geometric_evidence_fusion_single_script.py` | fusion/orchestrator | none by default | no | Experimental single-script fusion; consumes module evidence, not truth labels. |
+| X3.0 | `module_x3_0_trainable_geometric_evidence_unit.py` | trainable-aware fusion/orchestrator | none as monolith | no | Consumes active trainable/calibrable outputs and writes trainable influence maps. |
 
 ## Current Trainable Set
 
@@ -72,6 +73,12 @@ Frozen or non-trainable:
 V3.4.2
 X2.0
 unit orchestrator
+```
+
+Trainable-aware but not monolithic:
+
+```text
+X3.0
 ```
 
 ## Training Boundary

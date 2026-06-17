@@ -3,14 +3,14 @@
   "date": "2026-06-15",
   "scope": "runtime code only",
   "includes": {
-    "modules": 15,
-    "contracts": 15,
+    "modules": 16,
+    "contracts": 16,
     "models": [
       "models/g1_0_cal_v1_deferred_family/model_config.json",
       "models/g1_0_cal_v1_deferred_family/feature_scaler.json",
       "models/g1_0_cal_v1_deferred_family/coefficients.csv"
     ],
-    "docs": 8,
+    "docs": 9,
     "tools": [
       "tools/verify_vm_runtime.py"
     ]

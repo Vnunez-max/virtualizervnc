@@ -22,7 +22,7 @@ No module may gain interpretation by losing geometric traceability.
 ## Global Chain
 
 ```text
-V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
+V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0 -> X3.0
 ```
 
 ## Product Boundary
@@ -69,6 +69,7 @@ Scope reference:
 | G1.x | deferred family association | Associates deferred components with candidate line families and calibrated promotion decisions | trainable/calibrated layer | G1.0-CAL V1 trainable; G1.0 fixed-rule feature/resolver layer |
 | D1.x | deferred lineality complement | Rechecks deferred support for simple observed lineality without creating final geometry | complementary auditor | D1.0 fixed-rule; D1.1 future calibrable candidate |
 | X2.0 | single-script fusion | Fuses upstream maps and D1 evidence into auditable line-study and future-pool support | experimental transport unit | fusion/orchestrator, not trainable by default |
+| X3.0 | trainable-aware evidence unit | Integrates the functional unit, G1.0-CAL trainable evidence and D1 role evidence with explicit trainable influence maps | complete evidence runtime | trainable-aware fusion/orchestrator, not a trainable monolith |
 
 ## Trainability Boundary
 
@@ -226,6 +227,15 @@ Authoritative references:
 - Trainability: not trainable by default.
 - Role: transportable experimental fusion of upstream evidence plus D1-style deferred lineality.
 - Synergy: produces fused line-study support and future-module pool, not final geometry.
+
+### X3.0
+
+- Name: trainable geometric evidence unit.
+- Status: trainable-aware fusion/orchestrator.
+- Trainability: consumes active trainable/calibrable module outputs but is not trainable as a monolith.
+- Role: integrates UNIT, G1.0-CAL V1, D1.0 and D1.1 into traceable X3 evidence maps.
+- Synergy: makes trainable influence explicit while preserving the functional modular architecture.
+- Forbidden: runtime training, truth labels, final geometry, hidden trainable decisions.
 
 ## Promotion Rules
 

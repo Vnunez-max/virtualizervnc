@@ -16,7 +16,7 @@ tables, cells, OCR, symbols, clinical semantics, or final virtual objects.
 The project is organized as a cumulative geometric evidence chain:
 
 ```text
-V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
+V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0 -> X3.0
 ```
 
 Current repository roles:
@@ -67,6 +67,9 @@ See:
 
 - `docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md`
 - `docs/UNIT_MODEL_ERROR_CLEANUP_20260618.md`
+- `docs/X3_0_SMOKE_TEST_20260618.md`
+- `manifests/X3_TRAINABLE_GEOMETRIC_EVIDENCE_UNIT.md`
+- `contracts/CONTRACT_X3_0_TRAINABLE_GEOMETRIC_EVIDENCE_UNIT.md`
 
 ## Trainability Boundary
 
@@ -100,6 +103,10 @@ D1.0
 unit orchestrator
 X2.0
 ```
+
+X3.0 is trainable-aware but not a trainable monolith. It consumes active
+trainable/calibrable module outputs and writes explicit trainable influence
+maps.
 
 See:
 

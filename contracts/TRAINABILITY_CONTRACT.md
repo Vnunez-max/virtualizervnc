@@ -74,7 +74,11 @@ Current fusion/orchestrator modules:
 ```text
 unit full model
 X2.0
+X3.0
 ```
+
+X3.0 is trainable-aware because it consumes active trainable/calibrable module
+outputs and writes trainable influence maps. It is not trainable as a monolith.
 
 ## Runtime Ban
 
@@ -150,5 +154,5 @@ uses truth labels at runtime
 collapses component/family identity
 creates final geometry prematurely
 modifies frozen V3.4.2
-turns X2.0 into an untraceable black box
+turns X2.0 or X3.0 into an untraceable black box
 ```

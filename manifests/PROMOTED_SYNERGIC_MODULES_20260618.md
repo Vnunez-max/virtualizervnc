@@ -53,6 +53,10 @@ V3.4.2 -> C1.x -> U1.x -> L1.x -> G1.x -> D1.x -> X2.0
 
 - `modules/module_x2_0_geometric_evidence_fusion_single_script.py`
 
+### X3.0
+
+- `modules/x3/module_x3_0_trainable_geometric_evidence_unit.py`
+
 ## Promoted Contracts And Accessories
 
 - V3.4.2 contract under `contracts/v3_4_2/`
