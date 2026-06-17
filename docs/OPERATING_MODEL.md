@@ -99,9 +99,11 @@ V3.4.1 or V3.4.2 modifications
 X2.0 is the current real single-script fusion layer. It is not a replacement for the full upstream modular pipeline; it consumes upstream evidence maps and fuses decision support.
 
 X3.0 is the trainable-aware complete Geometric Evidence Unit runtime. It
-consumes UNIT, G1.0-CAL V1, D1.0 and D1.1 outputs, verifies readable trained
-assets, and writes explicit trainable influence maps. It is not a trainable
-monolith and not a final virtualizer.
+consumes UNIT, optional C1.0/C1.1 outputs, G1.0-CAL V1, D1.0 and D1.1 outputs,
+verifies readable trained assets, and writes explicit trainable influence
+maps. C1.0/C1.1 and D1.0/D1.1 are active functional layers. C1-CAL and D1-CAL
+are only reserved trainable slots until they have contracts and datasets. X3.0
+is not a trainable monolith and not a final virtualizer.
 
 ```text
 X1.0 = operational wrapper/runtime bundle

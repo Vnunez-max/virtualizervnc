@@ -63,11 +63,11 @@ Scope reference:
 | Family | Role | Main contribution | Output status | Trainability status |
 | --- | --- | --- | --- | --- |
 | V3.4.2 | residual evidence stratifier | Separates residual evidence while preserving geometric traceability | frozen upstream | frozen |
-| C1.x | residual geometry validators | Tests whether residual evidence has local or collective geometric coherence | complement | fixed-rule |
+| C1.x | residual geometry validators | Tests whether residual evidence has local or collective geometric coherence | active functional complement | fixed-rule |
 | U1.x | purity gates | Filters support toward clean grid-compatible geometric evidence | calibration layer | U1.1 fixed-rule; U1.1-CAL calibrable |
 | L1.x | observed support stratification | Separates line-study, non-line/future pool, mixed and deferred support | core modular unit | L1.1 and L1.2-CAL calibrable; L1.0/L1.2 fixed-rule |
 | G1.x | deferred family association | Associates deferred components with candidate line families and calibrated promotion decisions | trainable/calibrated layer | G1.0-CAL V1 trainable; G1.0 fixed-rule feature/resolver layer |
-| D1.x | deferred lineality complement | Rechecks deferred support for simple observed lineality without creating final geometry | complementary auditor | D1.0 fixed-rule; D1.1 future calibrable candidate |
+| D1.x | deferred lineality complement | Rechecks deferred support for simple observed lineality without creating final geometry | active complementary auditor | D1.0/D1.1 active fixed-rule; D1-CAL reserved |
 | X2.0 | single-script fusion | Fuses upstream maps and D1 evidence into auditable line-study and future-pool support | experimental transport unit | fusion/orchestrator, not trainable by default |
 | X3.0 | trainable-aware evidence unit | Integrates the functional unit, G1.0-CAL trainable evidence and D1 role evidence with explicit trainable influence maps | complete evidence runtime | trainable-aware fusion/orchestrator, not a trainable monolith |
 
@@ -233,8 +233,10 @@ Authoritative references:
 - Name: trainable geometric evidence unit.
 - Status: trainable-aware fusion/orchestrator.
 - Trainability: consumes active trainable/calibrable module outputs but is not trainable as a monolith.
-- Role: integrates UNIT, G1.0-CAL V1, D1.0 and D1.1 into traceable X3 evidence maps.
+- Role: integrates UNIT, C1.x when supplied, G1.0-CAL V1, D1.0 and D1.1 into traceable X3 evidence maps.
 - Synergy: makes trainable influence explicit while preserving the functional modular architecture.
+- Active functional layers: C1.0, C1.1, D1.0, D1.1.
+- Reserved trainable slots: C1-CAL, D1-CAL.
 - Forbidden: runtime training, truth labels, final geometry, hidden trainable decisions.
 
 ## Promotion Rules

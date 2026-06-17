@@ -60,11 +60,21 @@ L1.1
 L1.2-CAL
 ```
 
-Candidate for future calibration, not yet trainable by contract:
+Active functional layers that are not yet trained/calibrated by their own CAL
+model:
 
 ```text
+C1.0
+C1.1
+D1.0
 D1.1
-C1.x
+```
+
+Reserved for future calibration, not runtime-active as trainable models yet:
+
+```text
+D1-CAL
+C1-CAL
 ```
 
 Frozen or non-trainable:

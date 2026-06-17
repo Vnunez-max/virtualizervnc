@@ -104,9 +104,10 @@ unit orchestrator
 X2.0
 ```
 
-X3.0 is trainable-aware but not a trainable monolith. It consumes active
-trainable/calibrable module outputs and writes explicit trainable influence
-maps.
+X3.0 is trainable-aware but not a trainable monolith. C1.0/C1.1 and
+D1.0/D1.1 are active functional layers; G1.0-CAL V1 is the active trainable
+layer. Future C1-CAL/D1-CAL slots are reserved until they have contracts,
+datasets and readable runtime assets.
 
 See:
 

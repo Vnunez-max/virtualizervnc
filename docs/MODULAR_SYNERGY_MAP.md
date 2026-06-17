@@ -59,6 +59,7 @@ Real single-script fusion layer. It consumes upstream maps and fuses evidence in
 Trainable-aware complete Geometric Evidence Unit runtime.
 
 - consumes UNIT, G1.0-CAL V1, D1.0 and D1.1 outputs
+- treats C1.0/C1.1 and D1.0/D1.1 as active functional layers
 - verifies readable trainable model assets
 - writes trainable influence maps
 - preserves source-bit traceability

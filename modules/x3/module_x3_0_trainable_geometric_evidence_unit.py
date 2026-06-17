@@ -17,7 +17,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -70,6 +70,8 @@ SOURCE_BITS = {
     "d1_0_simple_linearity": 16,
     "d1_1_role_classifier": 32,
     "x3_fusion": 64,
+    "c1_0_functional_evidence": 128,
+    "c1_1_functional_evidence": 256,
 }
 
 G1_ACTION_NAMES = {
@@ -129,6 +131,18 @@ def load_map(path: Path, dtype: Any | None = None) -> np.ndarray:
 
 def load_bool(path: Path) -> np.ndarray:
     return load_map(path).astype(bool)
+
+
+def load_optional_bool(root: Optional[Path], rel_path: str, shape: Tuple[int, int]) -> Tuple[np.ndarray, bool, str]:
+    if root is None:
+        return np.zeros(shape, dtype=bool), False, ""
+    path = Path(root) / rel_path
+    if not path.exists():
+        return np.zeros(shape, dtype=bool), False, str(path)
+    arr = np.load(path).astype(bool)
+    if arr.shape != shape:
+        raise ValueError(f"Optional map has wrong shape: {path} {arr.shape} != {shape}")
+    return arr, True, str(path)
 
 
 def maps_dir(root: Path) -> Path:
@@ -263,6 +277,8 @@ def run(
     model_dir: Path,
     out_dir: Path,
     sample_id: str = "sample",
+    c1_0_dir: Optional[Path] = None,
+    c1_1_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     unit_maps = maps_dir(unit_dir)
     g1_maps = maps_dir(g1_cal_dir)
@@ -325,6 +341,18 @@ def run(
         "d1_ambiguous": d1_ambiguous,
     })
 
+    c1_0_validated, c1_0_supplied, c1_0_source = load_optional_bool(
+        c1_0_dir,
+        "maps/validated_hypothesis_observed_support_map.npy",
+        shape,
+    )
+    c1_1_validated, c1_1_supplied, c1_1_source = load_optional_bool(
+        c1_1_dir,
+        "maps/collective_validated_observed_support_map.npy",
+        shape,
+    )
+    c1_functional_evidence = (c1_0_validated | c1_1_validated) & observed
+
     trainable_changed = g1_candidate & np.isin(g1_action, [2, 3, 4])
     trainable_influence = g1_candidate & observed
     trainable_line_support = g1_promoted & observed
@@ -357,6 +385,8 @@ def run(
         ("d1_0_simple_linearity", d1_candidate),
         ("d1_1_role_classifier", d1_role > 0),
         ("x3_fusion", x3_accounted),
+        ("c1_0_functional_evidence", c1_0_validated),
+        ("c1_1_functional_evidence", c1_1_validated),
     ]:
         source_bit[mask & observed] |= SOURCE_BITS[name]
 
@@ -378,6 +408,7 @@ def run(
     np.save(map_out / "x3_d1_role_class_map.npy", d1_role.astype(np.uint8))
     np.save(map_out / "x3_d1_role_confidence_map.npy", d1_confidence.astype(np.float32))
     np.save(map_out / "x3_d1_hypothesis_id_map.npy", d1_hypothesis.astype(np.int32))
+    np.save(map_out / "x3_c1_functional_evidence_map.npy", c1_functional_evidence.astype(np.uint8))
 
     class_rows = build_class_rows(class_map, observed)
     write_csv(table_out / "x3_fused_class_summary.csv", class_rows, [
@@ -424,8 +455,17 @@ def run(
             "model_dir": "",
         },
         {
+            "layer_key": "c1_cal_future",
+            "status": "reserved_trainable_slot_not_runtime_active",
+            "scope": "future_residual_geometry_hypothesis_calibration",
+            "runtime_truth_labels_allowed": False,
+            "candidate_pixels": count(c1_functional_evidence),
+            "changed_decision_pixels": 0,
+            "model_dir": "",
+        },
+        {
             "layer_key": "d1_cal_future",
-            "status": "inactive_until_contract",
+            "status": "reserved_trainable_slot_not_runtime_active",
             "scope": "future_deferred_role_calibration",
             "runtime_truth_labels_allowed": False,
             "candidate_pixels": count(d1_candidate & observed),
@@ -442,6 +482,48 @@ def run(
         "changed_decision_pixels",
         "model_dir",
     ])
+    functional_rows = [
+        {
+            "layer_key": "c1_0",
+            "status": "active_functional_layer",
+            "supplied_to_x3_run": c1_0_supplied,
+            "role": "individual_residual_geometry_hypothesis_validation",
+            "evidence_pixels": count(c1_0_validated & observed),
+            "source": c1_0_source,
+        },
+        {
+            "layer_key": "c1_1",
+            "status": "active_functional_layer",
+            "supplied_to_x3_run": c1_1_supplied,
+            "role": "collective_residual_geometry_hypothesis_validation",
+            "evidence_pixels": count(c1_1_validated & observed),
+            "source": c1_1_source,
+        },
+        {
+            "layer_key": "d1_0",
+            "status": "active_functional_layer",
+            "supplied_to_x3_run": True,
+            "role": "deferred_simple_linearity",
+            "evidence_pixels": count(d1_candidate & observed),
+            "source": str(d1_0_dir),
+        },
+        {
+            "layer_key": "d1_1",
+            "status": "active_functional_layer",
+            "supplied_to_x3_run": True,
+            "role": "deferred_linear_role_classification",
+            "evidence_pixels": count(d1_role > 0),
+            "source": str(d1_1_dir),
+        },
+    ]
+    write_csv(table_out / "x3_functional_layers.csv", functional_rows, [
+        "layer_key",
+        "status",
+        "supplied_to_x3_run",
+        "role",
+        "evidence_pixels",
+        "source",
+    ])
     trace_rows = [
         {"source": name, "bit": bit, "pixel_count": int(np.count_nonzero((source_bit & bit) > 0))}
         for name, bit in SOURCE_BITS.items()
@@ -456,20 +538,22 @@ def run(
     bool_rgb(x3_future, (255, 96, 96)).save(visual_out / "03_x3_future_module_pool.png")
     bool_rgb(trainable_influence, (84, 255, 180)).save(visual_out / "04_x3_trainable_g1_influence.png")
     bool_rgb(d1_grid_added, (255, 214, 64)).save(visual_out / "05_x3_d1_grid_added.png")
+    bool_rgb(c1_functional_evidence, (255, 118, 210)).save(visual_out / "06_x3_c1_functional_evidence.png")
     influence_rgb = np.zeros((*shape, 3), dtype=np.uint8)
     influence_rgb[:, :] = (16, 16, 16)
     influence_rgb[trainable_influence_code == 1] = (84, 180, 255)
     influence_rgb[trainable_influence_code == 2] = (255, 214, 64)
     influence_rgb[trainable_influence_code == 3] = (84, 255, 180)
-    Image.fromarray(influence_rgb, mode="RGB").save(visual_out / "06_x3_trainable_influence_codes.png")
+    Image.fromarray(influence_rgb, mode="RGB").save(visual_out / "07_x3_trainable_influence_codes.png")
     make_contact_sheet([
         ("X3 fused class overlay", overlay),
         ("X3 fused line-study", Image.open(visual_out / "02_x3_fused_line_study.png")),
         ("X3 future-module pool", Image.open(visual_out / "03_x3_future_module_pool.png")),
         ("G1.0-CAL trainable influence", Image.open(visual_out / "04_x3_trainable_g1_influence.png")),
         ("D1 grid-line additions", Image.open(visual_out / "05_x3_d1_grid_added.png")),
-        ("Trainable influence codes", Image.open(visual_out / "06_x3_trainable_influence_codes.png")),
-    ], visual_out / "07_x3_audit_summary.png")
+        ("C1 functional evidence", Image.open(visual_out / "06_x3_c1_functional_evidence.png")),
+        ("Trainable influence codes", Image.open(visual_out / "07_x3_trainable_influence_codes.png")),
+    ], visual_out / "08_x3_audit_summary.png")
 
     counts = {
         "observed_support_pixels": count(observed),
@@ -480,6 +564,9 @@ def run(
         "g1_0_cal_v1_promoted_pixels": count(g1_promoted & observed),
         "d1_0_simple_linearity_candidate_pixels": count(d1_candidate & observed),
         "d1_1_grid_line_candidate_pixels": count(d1_grid & observed),
+        "c1_0_functional_evidence_pixels": count(c1_0_validated & observed),
+        "c1_1_functional_evidence_pixels": count(c1_1_validated & observed),
+        "c1_functional_evidence_pixels": count(c1_functional_evidence),
         "x3_d1_grid_line_added_pixels": count(d1_grid_added),
         "x3_fused_line_study_support_pixels": count(x3_line),
         "x3_fused_future_module_pool_pixels": count(x3_future),
@@ -491,6 +578,7 @@ def run(
         "x3_accounted_ratio_of_observed": float(count(x3_accounted) / max(count(observed), 1)),
         "trainable_changed_ratio_of_candidate": float(count(trainable_changed) / max(count(g1_candidate & observed), 1)),
         "d1_grid_added_ratio_of_observed": float(count(d1_grid_added) / max(count(observed), 1)),
+        "c1_functional_evidence_ratio_of_observed": float(count(c1_functional_evidence) / max(count(observed), 1)),
     }
     invariants = {
         "all_input_maps_same_shape": True,
@@ -502,6 +590,7 @@ def run(
         "trainable_changed_subset_of_g1_candidate": bool(np.all(~trainable_changed | g1_candidate)),
         "source_trace_for_all_x3_line_pixels": bool(np.all(source_bit[x3_line] > 0)),
         "source_trace_for_all_x3_future_pixels": bool(np.all(source_bit[x3_future] > 0)),
+        "c1_functional_evidence_subset_of_observed": bool(np.all(~c1_functional_evidence | observed)),
         "g1_trainable_model_assets_readable": bool(model_audit["assets_readable"]),
         "runtime_truth_labels_not_used": True,
         "does_not_create_final_geometry": True,
@@ -519,8 +608,9 @@ def run(
         "trainable_policy": {
             "unit_is_trainable_monolith": False,
             "active_trainable_runtime_layers": ["g1_0_cal_v1"],
+            "active_functional_layers": ["c1_0", "c1_1", "d1_0", "d1_1"],
             "calibrable_upstream_layers": ["u1_1_cal", "l1_1", "l1_2_cal"],
-            "inactive_future_slots": ["d1_cal_future"],
+            "reserved_trainable_slots_not_runtime_active": ["c1_cal_future", "d1_cal_future"],
             "runtime_truth_labels_allowed": False,
         },
         "outputs": {
@@ -548,6 +638,7 @@ def run(
                 "x3_fused_line_study_support_pixels": counts["x3_fused_line_study_support_pixels"],
                 "x3_fused_future_module_pool_pixels": counts["x3_fused_future_module_pool_pixels"],
                 "g1_0_cal_v1_changed_decision_pixels": counts["g1_0_cal_v1_changed_decision_pixels"],
+                "c1_functional_evidence_pixels": counts["c1_functional_evidence_pixels"],
                 "x3_d1_grid_line_added_pixels": counts["x3_d1_grid_line_added_pixels"],
                 "invariants_pass": all(invariants.values()),
             },
@@ -567,6 +658,8 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--model-dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--sample-id", default="sample")
+    ap.add_argument("--c1-0-dir", default=None)
+    ap.add_argument("--c1-1-dir", default=None)
     return ap.parse_args()
 
 
@@ -580,6 +673,8 @@ def main() -> None:
         model_dir=Path(args.model_dir),
         out_dir=Path(args.out),
         sample_id=args.sample_id,
+        c1_0_dir=Path(args.c1_0_dir) if args.c1_0_dir else None,
+        c1_1_dir=Path(args.c1_1_dir) if args.c1_1_dir else None,
     )
 
 

@@ -60,6 +60,13 @@ Role:
 extract and validate residual geometric evidence
 ```
 
+Status in X3:
+
+```text
+C1.0 and C1.1 are active functional evidence layers.
+C1-CAL is only a reserved future trainable slot.
+```
+
 Rule:
 
 ```text
@@ -140,6 +147,13 @@ Role:
 find clear observed lineality still left in deferred support
 ```
 
+Status in X3:
+
+```text
+D1.0 and D1.1 are active functional evidence layers.
+D1-CAL is only a reserved future trainable slot.
+```
+
 Rule:
 
 ```text
@@ -177,8 +191,9 @@ X3.0
 Role:
 
 ```text
-combine the functional unit, active trainable G1.0-CAL evidence, D1 evidence,
-trainable influence maps and source-bit traceability
+combine the functional unit, active C1/D1 functional evidence, active
+trainable G1.0-CAL evidence, trainable influence maps and source-bit
+traceability
 ```
 
 Rule:

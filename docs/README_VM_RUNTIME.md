@@ -127,7 +127,10 @@ python modules/d1/module_d1_1_deferred_linear_role_classifier.py \
   --sample-id sample_id
 ```
 
-X3.0 integra la unidad funcional con G1.0-CAL V1 y D1, escribiendo mapas de influencia entrenable sin convertir toda la unidad en modelo black-box.
+X3.0 integra la unidad funcional con C1 opcional, G1.0-CAL V1 y D1,
+escribiendo mapas de influencia entrenable sin convertir toda la unidad en
+modelo black-box. C1 y D1 son capas funcionales activas; C1-CAL/D1-CAL son
+solo slots entrenables reservados hasta contrato.
 
 ```bash
 python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
@@ -137,7 +140,9 @@ python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
   --d1-1-dir /ruta/a/d1_1_out \
   --model-dir models/g1_0_cal_v1_deferred_family \
   --out /ruta/a/x3_out \
-  --sample-id sample_id
+  --sample-id sample_id \
+  --c1-0-dir /ruta/opcional/a/c1_0_out \
+  --c1-1-dir /ruta/opcional/a/c1_1_out
 ```
 
 ## Nota sobre inputs

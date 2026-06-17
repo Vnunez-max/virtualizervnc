@@ -31,6 +31,7 @@ every trained decision must be traceable to pixels/components/families
 
 ```text
 UNIT outputs
+  + C1.0/C1.1 residual geometry evidence when supplied
   + G1.0-CAL V1 trainable outputs
   + D1.0 simple lineality
   + D1.1 role classification
@@ -44,6 +45,15 @@ UNIT outputs
 | --- | --- | --- | --- |
 | G1.0-CAL V1 | active trainable | component-family candidate calibration | forbidden |
 
+## Active Functional Modules
+
+| Layer | Status | Runtime role | Runtime truth labels |
+| --- | --- | --- | --- |
+| C1.0 | active functional | individual residual geometry hypothesis validation | forbidden |
+| C1.1 | active functional | collective residual geometry hypothesis validation | forbidden |
+| D1.0 | active functional | deferred simple lineality | forbidden |
+| D1.1 | active functional | deferred linear role classification | forbidden |
+
 ## Active Calibrable Inputs
 
 | Layer | Status | Runtime role | Runtime truth labels |
@@ -52,13 +62,13 @@ UNIT outputs
 | L1.1 | upstream calibrable | observed-domain calibration | forbidden |
 | L1.2-CAL | upstream calibrable | deferred line-like calibration | forbidden |
 
-## Future Trainable/Calibrable Slots
+## Reserved Trainable/Calibrable Slots
 
-| Slot | Status | Required before activation |
+| Slot | Status | Required before runtime activation |
 | --- | --- | --- |
-| D1-CAL | inactive | contract, dataset, features, evaluation, readable assets |
-| C1-CAL | inactive | contract, dataset, features, evaluation, readable assets |
-| U/L extended calibrators | inactive | contract, dataset boundary, runtime safety audit |
+| D1-CAL | reserved, not runtime-active | contract, dataset, features, evaluation, readable assets |
+| C1-CAL | reserved, not runtime-active | contract, dataset, features, evaluation, readable assets |
+| U/L extended calibrators | reserved, not runtime-active | contract, dataset boundary, runtime safety audit |
 
 ## X3 Module
 
