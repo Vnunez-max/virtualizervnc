@@ -36,6 +36,7 @@ CLASS_D1_CURVE_OR_TRACE = 7
 CLASS_D1_AMBIGUOUS = 8
 CLASS_UNACCOUNTED = 9
 CLASS_C1_CAL_RESIDUAL_GEOMETRY = 10
+CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE = 11
 
 CLASS_NAMES = {
     CLASS_BACKGROUND: "background",
@@ -49,6 +50,7 @@ CLASS_NAMES = {
     CLASS_D1_AMBIGUOUS: "d1_ambiguous_linear",
     CLASS_UNACCOUNTED: "unaccounted_observed",
     CLASS_C1_CAL_RESIDUAL_GEOMETRY: "c1_cal_residual_geometry_evidence",
+    CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE: "g1_cal_probable_line_evidence",
 }
 
 CLASS_COLORS = {
@@ -63,6 +65,7 @@ CLASS_COLORS = {
     CLASS_D1_AMBIGUOUS: (220, 220, 220),
     CLASS_UNACCOUNTED: (255, 255, 255),
     CLASS_C1_CAL_RESIDUAL_GEOMETRY: (255, 118, 210),
+    CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE: (0, 210, 210),
 }
 
 SOURCE_BITS = {
@@ -79,6 +82,7 @@ SOURCE_BITS = {
     "c1_cal_v1_changed_decision": 1024,
     "d1_cal_v1_trainable_candidate": 2048,
     "d1_cal_v1_changed_decision": 4096,
+    "g1_0_cal_v1_probable_line_evidence": 8192,
 }
 
 G1_ACTION_NAMES = {
@@ -321,6 +325,7 @@ def run(
     g1_promoted = load_bool(g1_maps / "g1_0_cal_v1_promoted_to_line_map.npy")
     g1_future = load_bool(g1_maps / "g1_0_cal_v1_calibrated_future_module_pool_map.npy")
     g1_deferred = load_bool(g1_maps / "g1_0_cal_v1_calibrated_deferred_domain_support_map.npy")
+    g1_probable_line = load_bool(g1_maps / "g1_0_cal_v1_calibrated_probable_line_domain_support_map.npy")
 
     d1_candidate = load_bool(d1_0_maps / "simple_linearity_candidate_map.npy")
     d1_hypothesis = load_map(d1_0_maps / "linearity_hypothesis_id_map.npy").astype(np.int32)
@@ -344,6 +349,7 @@ def run(
         "g1_promoted": g1_promoted,
         "g1_future": g1_future,
         "g1_deferred": g1_deferred,
+        "g1_probable_line": g1_probable_line,
         "d1_candidate": d1_candidate,
         "d1_hypothesis": d1_hypothesis,
         "d1_role": d1_role,
@@ -438,7 +444,9 @@ def run(
     d1_reserved_future = (d1_cal_text | d1_cal_tick | d1_cal_border | d1_cal_curve | d1_cal_ambiguous) & observed & ~x3_line
     c1_reserved_future = c1_cal_reserved & observed & ~x3_line
     x3_future = (unit_future | g1_future | d1_reserved_future | c1_reserved_future | (g1_deferred & observed & ~x3_line)) & observed & ~x3_line
-    x3_accounted = x3_line | x3_future
+    g1_probable_line_evidence = g1_probable_line & observed & ~x3_line
+    x3_calibrated_reserved_evidence = g1_probable_line_evidence
+    x3_accounted = x3_line | x3_future | x3_calibrated_reserved_evidence
     x3_unaccounted = observed & ~x3_accounted
 
     class_map = np.zeros(shape, dtype=np.uint8)
@@ -453,6 +461,7 @@ def run(
     class_map[c1_cal_line_added] = CLASS_C1_CAL_RESIDUAL_GEOMETRY
     class_map[d1_grid_added] = CLASS_D1_GRID_LINE
     class_map[x3_unaccounted] = CLASS_UNACCOUNTED
+    class_map[g1_probable_line_evidence] = CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE
 
     source_bit = np.zeros(shape, dtype=np.uint16)
     for name, mask in [
@@ -460,6 +469,7 @@ def run(
         ("unit_base_future", unit_future),
         ("g1_0_cal_v1_trainable_candidate", g1_candidate),
         ("g1_0_cal_v1_changed_decision", trainable_changed),
+        ("g1_0_cal_v1_probable_line_evidence", g1_probable_line_evidence),
         ("d1_0_simple_linearity", d1_candidate),
         ("d1_1_role_classifier", d1_role > 0),
         ("x3_fusion", x3_accounted),
@@ -483,6 +493,7 @@ def run(
     np.save(map_out / "x3_unit_line_study_support_map.npy", unit_line.astype(np.uint8))
     np.save(map_out / "x3_trainable_g1_0_cal_v1_influence_map.npy", trainable_influence_code.astype(np.uint8))
     np.save(map_out / "x3_trainable_changed_decision_map.npy", trainable_changed.astype(np.uint8))
+    np.save(map_out / "x3_g1_cal_v1_probable_line_evidence_map.npy", g1_probable_line_evidence.astype(np.uint8))
     np.save(map_out / "x3_d1_grid_line_added_map.npy", d1_grid_added.astype(np.uint8))
     np.save(map_out / "x3_fused_line_study_support_map.npy", x3_line.astype(np.uint8))
     np.save(map_out / "x3_fused_future_module_pool_map.npy", x3_future.astype(np.uint8))
@@ -628,6 +639,7 @@ def run(
     bool_rgb(trainable_influence, (84, 255, 180)).save(visual_out / "04_x3_trainable_g1_influence.png")
     bool_rgb(d1_grid_added, (255, 214, 64)).save(visual_out / "05_x3_d1_grid_added.png")
     bool_rgb(c1_functional_evidence, (255, 118, 210)).save(visual_out / "06_x3_c1_functional_evidence.png")
+    bool_rgb(g1_probable_line_evidence, (0, 210, 210)).save(visual_out / "11_x3_g1_cal_probable_line_evidence.png")
     bool_rgb(c1_cal_line_added, (255, 118, 210)).save(visual_out / "09_x3_c1_cal_added.png")
     bool_rgb(d1_cal_changed & observed, (255, 255, 80)).save(visual_out / "10_x3_d1_cal_changed.png")
     influence_rgb = np.zeros((*shape, 3), dtype=np.uint8)
@@ -648,6 +660,7 @@ def run(
         ("Trainable influence codes", Image.open(visual_out / "07_x3_trainable_influence_codes.png")),
         ("C1-CAL added evidence", Image.open(visual_out / "09_x3_c1_cal_added.png")),
         ("D1-CAL changed decisions", Image.open(visual_out / "10_x3_d1_cal_changed.png")),
+        ("G1-CAL probable line evidence", Image.open(visual_out / "11_x3_g1_cal_probable_line_evidence.png")),
     ], visual_out / "08_x3_audit_summary.png")
 
     counts = {
@@ -657,6 +670,7 @@ def run(
         "g1_0_cal_v1_candidate_pixels": count(g1_candidate & observed),
         "g1_0_cal_v1_changed_decision_pixels": count(trainable_changed),
         "g1_0_cal_v1_promoted_pixels": count(g1_promoted & observed),
+        "g1_0_cal_v1_probable_line_evidence_pixels": count(g1_probable_line_evidence),
         "d1_0_simple_linearity_candidate_pixels": count(d1_candidate & observed),
         "d1_1_grid_line_candidate_pixels": count(d1_grid & observed),
         "d1_active_grid_line_candidate_pixels": count(d1_cal_grid & observed),
@@ -682,6 +696,7 @@ def run(
         "c1_functional_evidence_ratio_of_observed": float(count(c1_functional_evidence) / max(count(observed), 1)),
         "c1_cal_added_ratio_of_observed": float(count(c1_cal_line_added) / max(count(observed), 1)),
         "d1_cal_changed_ratio_of_candidate": float(count(d1_cal_changed & observed) / max(count(d1_cal_candidate & observed), 1)),
+        "g1_probable_line_evidence_ratio_of_observed": float(count(g1_probable_line_evidence) / max(count(observed), 1)),
     }
     invariants = {
         "all_input_maps_same_shape": True,
@@ -695,7 +710,9 @@ def run(
         "d1_cal_output_subset_of_d1_candidate": bool(np.all(~(d1_cal_candidate & observed) | d1_candidate)),
         "source_trace_for_all_x3_line_pixels": bool(np.all(source_bit[x3_line] > 0)),
         "source_trace_for_all_x3_future_pixels": bool(np.all(source_bit[x3_future] > 0)),
+        "source_trace_for_all_g1_probable_line_evidence_pixels": bool(np.all(source_bit[g1_probable_line_evidence] > 0)),
         "c1_functional_evidence_subset_of_observed": bool(np.all(~c1_functional_evidence | observed)),
+        "g1_probable_line_evidence_subset_of_observed": bool(np.all(~g1_probable_line_evidence | observed)),
         "g1_trainable_model_assets_readable": bool(model_audit["g1_0_cal_v1"]["assets_readable"]),
         "c1_cal_model_assets_readable_when_supplied": bool(c1_cal_model_dir is None or model_audit["c1_cal_v1"]["assets_readable"]),
         "d1_cal_model_assets_readable_when_supplied": bool(d1_cal_model_dir is None or model_audit["d1_cal_v1"]["assets_readable"]),

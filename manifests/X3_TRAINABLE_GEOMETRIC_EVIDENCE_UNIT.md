@@ -111,6 +111,7 @@ all X3 invariants pass
 G1.0-CAL, C1-CAL and D1-CAL assets are readable
 trainable influence maps are written
 source-bit maps are written
+G1.0-CAL probable-line evidence is preserved as its own traced evidence layer
 visual audit exists
 no runtime truth labels are consumed
 no final geometry is created

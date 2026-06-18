@@ -131,6 +131,7 @@ g1_0_cal_v1_promoted_to_line_map.npy
 g1_0_cal_v1_non_promoted_candidate_map.npy
 g1_0_cal_v1_calibrated_future_module_pool_map.npy
 g1_0_cal_v1_calibrated_deferred_domain_support_map.npy
+g1_0_cal_v1_calibrated_probable_line_domain_support_map.npy
 ```
 
 Required D1.0 maps:
@@ -188,6 +189,7 @@ x3_observed_support_map.npy
 x3_unit_line_study_support_map.npy
 x3_trainable_g1_0_cal_v1_influence_map.npy
 x3_trainable_changed_decision_map.npy
+x3_g1_cal_v1_probable_line_evidence_map.npy
 x3_d1_grid_line_added_map.npy
 x3_fused_line_study_support_map.npy
 x3_fused_future_module_pool_map.npy
@@ -228,6 +230,7 @@ Visuals:
 08_x3_audit_summary.png
 09_x3_c1_cal_added.png
 10_x3_d1_cal_changed.png
+11_x3_g1_cal_probable_line_evidence.png
 ```
 
 Reports:
@@ -250,12 +253,13 @@ derive observed support only from the unit observed map
 start line-study support from the unit line-study map
 register C1.0/C1.1 as active residual functional evidence when supplied
 derive trainable influence from G1.0-CAL V1 candidates/actions
+preserve G1.0-CAL probable-line domain as calibrated evidence, not final geometry
 add C1-CAL promoted residual evidence only as line-study evidence
 use D1-CAL roles when supplied, otherwise use D1.1 roles
 add D1 grid-line candidates only as line-study evidence
 reserve D1 non-grid linear roles for future-module pool
 preserve unaccounted observed support explicitly
-write source-bit traceability for fused line and future pixels
+write source-bit traceability for fused line, future, and G1 probable-line evidence pixels
 ```
 
 ## Forbidden
@@ -290,7 +294,9 @@ c1_cal_added_subset_of_c1_cal_candidate == true
 d1_cal_output_subset_of_d1_candidate == true
 source_trace_for_all_x3_line_pixels == true
 source_trace_for_all_x3_future_pixels == true
+source_trace_for_all_g1_probable_line_evidence_pixels == true
 c1_functional_evidence_subset_of_observed == true
+g1_probable_line_evidence_subset_of_observed == true
 g1_trainable_model_assets_readable == true
 c1_cal_model_assets_readable_when_supplied == true
 d1_cal_model_assets_readable_when_supplied == true
