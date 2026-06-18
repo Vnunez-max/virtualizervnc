@@ -190,6 +190,7 @@ x3_unit_line_study_support_map.npy
 x3_trainable_g1_0_cal_v1_influence_map.npy
 x3_trainable_changed_decision_map.npy
 x3_g1_cal_v1_probable_line_evidence_map.npy
+x3_d1_observed_line_added_map.npy
 x3_d1_grid_line_added_map.npy
 x3_fused_line_study_support_map.npy
 x3_fused_future_module_pool_map.npy
@@ -231,6 +232,7 @@ Visuals:
 09_x3_c1_cal_added.png
 10_x3_d1_cal_changed.png
 11_x3_g1_cal_probable_line_evidence.png
+12_x3_d1_observed_line_added.png
 ```
 
 Reports:
@@ -256,7 +258,8 @@ derive trainable influence from G1.0-CAL V1 candidates/actions
 preserve G1.0-CAL probable-line domain as calibrated evidence, not final geometry
 add C1-CAL promoted residual evidence only as line-study evidence
 use D1-CAL roles when supplied, otherwise use D1.1 roles
-add D1 grid-line candidates only as line-study evidence
+add D1.0 simple observed-line candidates as D1 observed-line evidence
+preserve D1.1/D1-CAL roles as annotations/routing, not as required promotion gates
 reserve D1 non-grid linear roles for future-module pool
 preserve unaccounted observed support explicitly
 write source-bit traceability for fused line, future, and G1 probable-line evidence pixels
@@ -287,6 +290,7 @@ all_input_maps_same_shape == true
 x3_line_subset_of_observed == true
 x3_future_subset_of_observed == true
 x3_line_and_future_disjoint == true
+d1_observed_line_added_subset_of_d1_candidate == true
 d1_grid_added_subset_of_d1_candidate == true
 trainable_influence_subset_of_g1_candidate == true
 trainable_changed_subset_of_g1_candidate == true

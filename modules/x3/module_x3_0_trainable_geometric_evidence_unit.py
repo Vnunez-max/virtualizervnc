@@ -37,6 +37,7 @@ CLASS_D1_AMBIGUOUS = 8
 CLASS_UNACCOUNTED = 9
 CLASS_C1_CAL_RESIDUAL_GEOMETRY = 10
 CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE = 11
+CLASS_D1_OBSERVED_LINE_EVIDENCE = 12
 
 CLASS_NAMES = {
     CLASS_BACKGROUND: "background",
@@ -51,6 +52,7 @@ CLASS_NAMES = {
     CLASS_UNACCOUNTED: "unaccounted_observed",
     CLASS_C1_CAL_RESIDUAL_GEOMETRY: "c1_cal_residual_geometry_evidence",
     CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE: "g1_cal_probable_line_evidence",
+    CLASS_D1_OBSERVED_LINE_EVIDENCE: "d1_observed_line_evidence",
 }
 
 CLASS_COLORS = {
@@ -66,6 +68,7 @@ CLASS_COLORS = {
     CLASS_UNACCOUNTED: (255, 255, 255),
     CLASS_C1_CAL_RESIDUAL_GEOMETRY: (255, 118, 210),
     CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE: (0, 210, 210),
+    CLASS_D1_OBSERVED_LINE_EVIDENCE: (255, 238, 120),
 }
 
 SOURCE_BITS = {
@@ -83,6 +86,7 @@ SOURCE_BITS = {
     "d1_cal_v1_trainable_candidate": 2048,
     "d1_cal_v1_changed_decision": 4096,
     "g1_0_cal_v1_probable_line_evidence": 8192,
+    "d1_0_observed_line_added": 16384,
 }
 
 G1_ACTION_NAMES = {
@@ -439,8 +443,9 @@ def run(
     trainable_line_support = g1_promoted & observed
 
     c1_cal_line_added = c1_cal_promoted & observed & ~unit_line
-    d1_grid_added = d1_cal_grid & observed & ~unit_line & ~c1_cal_line_added
-    x3_line = (unit_line | c1_cal_line_added | d1_grid_added) & observed
+    d1_observed_line_added = d1_candidate & observed & ~unit_line & ~c1_cal_line_added
+    d1_grid_added = d1_cal_grid & d1_observed_line_added
+    x3_line = (unit_line | c1_cal_line_added | d1_observed_line_added) & observed
     d1_reserved_future = (d1_cal_text | d1_cal_tick | d1_cal_border | d1_cal_curve | d1_cal_ambiguous) & observed & ~x3_line
     c1_reserved_future = c1_cal_reserved & observed & ~x3_line
     x3_future = (unit_future | g1_future | d1_reserved_future | c1_reserved_future | (g1_deferred & observed & ~x3_line)) & observed & ~x3_line
@@ -459,6 +464,7 @@ def run(
     class_map[d1_cal_ambiguous & observed & ~x3_line] = CLASS_D1_AMBIGUOUS
     class_map[unit_line & observed] = CLASS_UNIT_LINE_STUDY
     class_map[c1_cal_line_added] = CLASS_C1_CAL_RESIDUAL_GEOMETRY
+    class_map[d1_observed_line_added] = CLASS_D1_OBSERVED_LINE_EVIDENCE
     class_map[d1_grid_added] = CLASS_D1_GRID_LINE
     class_map[x3_unaccounted] = CLASS_UNACCOUNTED
     class_map[g1_probable_line_evidence] = CLASS_G1_CAL_PROBABLE_LINE_EVIDENCE
@@ -471,6 +477,7 @@ def run(
         ("g1_0_cal_v1_changed_decision", trainable_changed),
         ("g1_0_cal_v1_probable_line_evidence", g1_probable_line_evidence),
         ("d1_0_simple_linearity", d1_candidate),
+        ("d1_0_observed_line_added", d1_observed_line_added),
         ("d1_1_role_classifier", d1_role > 0),
         ("x3_fusion", x3_accounted),
         ("c1_0_functional_evidence", c1_0_validated),
@@ -494,6 +501,7 @@ def run(
     np.save(map_out / "x3_trainable_g1_0_cal_v1_influence_map.npy", trainable_influence_code.astype(np.uint8))
     np.save(map_out / "x3_trainable_changed_decision_map.npy", trainable_changed.astype(np.uint8))
     np.save(map_out / "x3_g1_cal_v1_probable_line_evidence_map.npy", g1_probable_line_evidence.astype(np.uint8))
+    np.save(map_out / "x3_d1_observed_line_added_map.npy", d1_observed_line_added.astype(np.uint8))
     np.save(map_out / "x3_d1_grid_line_added_map.npy", d1_grid_added.astype(np.uint8))
     np.save(map_out / "x3_fused_line_study_support_map.npy", x3_line.astype(np.uint8))
     np.save(map_out / "x3_fused_future_module_pool_map.npy", x3_future.astype(np.uint8))
@@ -640,6 +648,7 @@ def run(
     bool_rgb(d1_grid_added, (255, 214, 64)).save(visual_out / "05_x3_d1_grid_added.png")
     bool_rgb(c1_functional_evidence, (255, 118, 210)).save(visual_out / "06_x3_c1_functional_evidence.png")
     bool_rgb(g1_probable_line_evidence, (0, 210, 210)).save(visual_out / "11_x3_g1_cal_probable_line_evidence.png")
+    bool_rgb(d1_observed_line_added, (255, 238, 120)).save(visual_out / "12_x3_d1_observed_line_added.png")
     bool_rgb(c1_cal_line_added, (255, 118, 210)).save(visual_out / "09_x3_c1_cal_added.png")
     bool_rgb(d1_cal_changed & observed, (255, 255, 80)).save(visual_out / "10_x3_d1_cal_changed.png")
     influence_rgb = np.zeros((*shape, 3), dtype=np.uint8)
@@ -661,6 +670,7 @@ def run(
         ("C1-CAL added evidence", Image.open(visual_out / "09_x3_c1_cal_added.png")),
         ("D1-CAL changed decisions", Image.open(visual_out / "10_x3_d1_cal_changed.png")),
         ("G1-CAL probable line evidence", Image.open(visual_out / "11_x3_g1_cal_probable_line_evidence.png")),
+        ("D1 observed-line additions", Image.open(visual_out / "12_x3_d1_observed_line_added.png")),
     ], visual_out / "08_x3_audit_summary.png")
 
     counts = {
@@ -674,6 +684,9 @@ def run(
         "d1_0_simple_linearity_candidate_pixels": count(d1_candidate & observed),
         "d1_1_grid_line_candidate_pixels": count(d1_grid & observed),
         "d1_active_grid_line_candidate_pixels": count(d1_cal_grid & observed),
+        "x3_d1_observed_line_added_pixels": count(d1_observed_line_added),
+        "x3_d1_observed_line_added_with_grid_role_pixels": count(d1_grid_added),
+        "x3_d1_observed_line_added_without_grid_role_pixels": count(d1_observed_line_added & ~d1_cal_grid),
         "c1_0_functional_evidence_pixels": count(c1_0_validated & observed),
         "c1_1_functional_evidence_pixels": count(c1_1_validated & observed),
         "c1_functional_evidence_pixels": count(c1_functional_evidence),
@@ -692,6 +705,7 @@ def run(
         "x3_future_delta_vs_unit_pixels": counts["x3_fused_future_module_pool_pixels"] - counts["unit_future_module_pool_pixels"],
         "x3_accounted_ratio_of_observed": float(count(x3_accounted) / max(count(observed), 1)),
         "trainable_changed_ratio_of_candidate": float(count(trainable_changed) / max(count(g1_candidate & observed), 1)),
+        "d1_observed_line_added_ratio_of_observed": float(count(d1_observed_line_added) / max(count(observed), 1)),
         "d1_grid_added_ratio_of_observed": float(count(d1_grid_added) / max(count(observed), 1)),
         "c1_functional_evidence_ratio_of_observed": float(count(c1_functional_evidence) / max(count(observed), 1)),
         "c1_cal_added_ratio_of_observed": float(count(c1_cal_line_added) / max(count(observed), 1)),
@@ -703,6 +717,7 @@ def run(
         "x3_line_subset_of_observed": bool(np.all(~x3_line | observed)),
         "x3_future_subset_of_observed": bool(np.all(~x3_future | observed)),
         "x3_line_and_future_disjoint": bool(not np.any(x3_line & x3_future)),
+        "d1_observed_line_added_subset_of_d1_candidate": bool(np.all(~d1_observed_line_added | d1_candidate)),
         "d1_grid_added_subset_of_d1_candidate": bool(np.all(~d1_grid_added | d1_candidate)),
         "trainable_influence_subset_of_g1_candidate": bool(np.all(~trainable_influence | g1_candidate)),
         "trainable_changed_subset_of_g1_candidate": bool(np.all(~trainable_changed | g1_candidate)),
@@ -775,6 +790,7 @@ def run(
                 "c1_functional_evidence_pixels": counts["c1_functional_evidence_pixels"],
                 "c1_cal_v1_added_pixels": counts["c1_cal_v1_added_pixels"],
                 "d1_cal_v1_changed_decision_pixels": counts["d1_cal_v1_changed_decision_pixels"],
+                "x3_d1_observed_line_added_pixels": counts["x3_d1_observed_line_added_pixels"],
                 "x3_d1_grid_line_added_pixels": counts["x3_d1_grid_line_added_pixels"],
                 "invariants_pass": all(invariants.values()),
             },
