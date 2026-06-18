@@ -1,0 +1,213 @@
+{
+  "version": "MODULE_D1_CAL_V1_TRAINABLE_DEFERRED_LINEAR_ROLE_CALIBRATOR",
+  "model_type": "numpy_softmax_regression",
+  "targets": [
+    "grid_line_candidate",
+    "axis_line_candidate",
+    "tick_or_scale_mark",
+    "page_border_or_layout_box",
+    "text_or_digit_stroke",
+    "curve_or_data_trace",
+    "ambiguous_linear"
+  ],
+  "feature_names": [
+    "span_px",
+    "pixel_count_log",
+    "density",
+    "longest_run",
+    "lineality_score",
+    "edge_distance_px",
+    "same_axis_extension_score",
+    "near_line_study_contact_score",
+    "parallel_context_count",
+    "parallel_context_score",
+    "local_observed_context_score",
+    "grid_role_score",
+    "axis_role_score",
+    "tick_role_score",
+    "border_role_score",
+    "text_role_score",
+    "curve_role_score",
+    "orientation_horizontal",
+    "orientation_vertical"
+  ],
+  "role_code": {
+    "grid_line_candidate": 1,
+    "axis_line_candidate": 2,
+    "tick_or_scale_mark": 3,
+    "page_border_or_layout_box": 4,
+    "text_or_digit_stroke": 5,
+    "curve_or_data_trace": 6,
+    "ambiguous_linear": 7
+  },
+  "train_config": {
+    "version": "MODULE_D1_CAL_V1_TRAINABLE_DEFERRED_LINEAR_ROLE_CALIBRATOR",
+    "seed": 3520,
+    "epochs": 2200,
+    "learning_rate": 0.07,
+    "l2": 0.001
+  },
+  "dataset_id": "D1_CAL_V1_DEFERRED_LINEAR_ROLE_DATASET",
+  "train_info": {
+    "class_counts": {
+      "grid_line_candidate": 70,
+      "axis_line_candidate": 62,
+      "tick_or_scale_mark": 69,
+      "page_border_or_layout_box": 72,
+      "text_or_digit_stroke": 66,
+      "curve_or_data_trace": 63,
+      "ambiguous_linear": 66
+    },
+    "class_weights": {
+      "grid_line_candidate": 0.9551020408163265,
+      "axis_line_candidate": 1.0783410138248848,
+      "tick_or_scale_mark": 0.968944099378882,
+      "page_border_or_layout_box": 0.9285714285714286,
+      "text_or_digit_stroke": 1.0129870129870129,
+      "curve_or_data_trace": 1.0612244897959184,
+      "ambiguous_linear": 1.0129870129870129
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 1.9347990993308926
+      },
+      {
+        "epoch": 10,
+        "loss": 1.1064541160829584
+      },
+      {
+        "epoch": 50,
+        "loss": 0.35696873502488186
+      },
+      {
+        "epoch": 100,
+        "loss": 0.20429296278900683
+      },
+      {
+        "epoch": 500,
+        "loss": 0.06745661277797342
+      },
+      {
+        "epoch": 1000,
+        "loss": 0.04880152209155586
+      },
+      {
+        "epoch": 2200,
+        "loss": 0.039571003563115104
+      }
+    ],
+    "evaluation": {
+      "train": {
+        "count": 468,
+        "accuracy": 1.0,
+        "per_class": {
+          "grid_line_candidate": {
+            "count": 70,
+            "accuracy": 1.0
+          },
+          "axis_line_candidate": {
+            "count": 62,
+            "accuracy": 1.0
+          },
+          "tick_or_scale_mark": {
+            "count": 69,
+            "accuracy": 1.0
+          },
+          "page_border_or_layout_box": {
+            "count": 72,
+            "accuracy": 1.0
+          },
+          "text_or_digit_stroke": {
+            "count": 66,
+            "accuracy": 1.0
+          },
+          "curve_or_data_trace": {
+            "count": 63,
+            "accuracy": 1.0
+          },
+          "ambiguous_linear": {
+            "count": 66,
+            "accuracy": 1.0
+          }
+        }
+      },
+      "validation": {
+        "count": 102,
+        "accuracy": 1.0,
+        "per_class": {
+          "grid_line_candidate": {
+            "count": 21,
+            "accuracy": 1.0
+          },
+          "axis_line_candidate": {
+            "count": 15,
+            "accuracy": 1.0
+          },
+          "tick_or_scale_mark": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "page_border_or_layout_box": {
+            "count": 12,
+            "accuracy": 1.0
+          },
+          "text_or_digit_stroke": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "curve_or_data_trace": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "ambiguous_linear": {
+            "count": 12,
+            "accuracy": 1.0
+          }
+        }
+      },
+      "holdout": {
+        "count": 102,
+        "accuracy": 1.0,
+        "per_class": {
+          "grid_line_candidate": {
+            "count": 15,
+            "accuracy": 1.0
+          },
+          "axis_line_candidate": {
+            "count": 16,
+            "accuracy": 1.0
+          },
+          "tick_or_scale_mark": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "page_border_or_layout_box": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "text_or_digit_stroke": {
+            "count": 14,
+            "accuracy": 1.0
+          },
+          "curve_or_data_trace": {
+            "count": 17,
+            "accuracy": 1.0
+          },
+          "ambiguous_linear": {
+            "count": 12,
+            "accuracy": 1.0
+          }
+        }
+      }
+    }
+  },
+  "truth_usage_policy": "Truth labels are used only for training, validation, holdout evaluation, and audit.",
+  "runtime_prohibitions": {
+    "does_not_modify_d1": true,
+    "does_not_modify_v3_4_2": true,
+    "does_not_create_final_geometry": true,
+    "no_ocr": true,
+    "no_clinical_semantics": true
+  }
+}

@@ -18,6 +18,7 @@ Residual evidence geometry hypothesis validators.
 
 - C1.0: individual residual evidence hypothesis validation
 - C1.1: collective residual evidence hypothesis validation
+- C1-CAL V1: trainable residual hypothesis calibration
 
 ### U1.x
 
@@ -49,6 +50,7 @@ Complementary deferred observed-line analysis.
 
 - D1.0: simple lineality auditor inside deferred
 - D1.1: deferred linear role classifier
+- D1-CAL V1: trainable deferred linear role calibration
 
 ### X2.0
 
@@ -58,7 +60,7 @@ Real single-script fusion layer. It consumes upstream maps and fuses evidence in
 
 Trainable-aware complete Geometric Evidence Unit runtime.
 
-- consumes UNIT, G1.0-CAL V1, D1.0 and D1.1 outputs
+- consumes UNIT, C1.x, C1-CAL V1, G1.0-CAL V1, D1.0/D1.1 and D1-CAL V1 outputs when supplied
 - treats C1.0/C1.1 and D1.0/D1.1 as active functional layers
 - verifies readable trainable model assets
 - writes trainable influence maps

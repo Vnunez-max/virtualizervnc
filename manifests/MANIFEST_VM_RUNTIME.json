@@ -3,14 +3,20 @@
   "date": "2026-06-15",
   "scope": "runtime code only",
   "includes": {
-    "modules": 16,
-    "contracts": 16,
+    "modules": 22,
+    "contracts": 18,
     "models": [
       "models/g1_0_cal_v1_deferred_family/model_config.json",
       "models/g1_0_cal_v1_deferred_family/feature_scaler.json",
-      "models/g1_0_cal_v1_deferred_family/coefficients.csv"
+      "models/g1_0_cal_v1_deferred_family/coefficients.csv",
+      "models/c1_cal_v1_residual_hypothesis/model_config.json",
+      "models/c1_cal_v1_residual_hypothesis/feature_scaler.json",
+      "models/c1_cal_v1_residual_hypothesis/coefficients.csv",
+      "models/d1_cal_v1_deferred_linear_role/model_config.json",
+      "models/d1_cal_v1_deferred_linear_role/feature_scaler.json",
+      "models/d1_cal_v1_deferred_linear_role/coefficients.csv"
     ],
-    "docs": 9,
+    "docs": 10,
     "tools": [
       "tools/verify_vm_runtime.py"
     ]

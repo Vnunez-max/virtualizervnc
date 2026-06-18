@@ -1,0 +1,141 @@
+{
+  "version": "MODULE_C1_CAL_V1_TRAINABLE_RESIDUAL_HYPOTHESIS_CALIBRATOR",
+  "model_type": "numpy_softmax_regression",
+  "targets": [
+    "promote_residual_geometry",
+    "keep_context",
+    "reserve_non_geometry"
+  ],
+  "feature_names": [
+    "observed_pixel_count_log",
+    "inferred_span_pixel_count_log",
+    "validation_score",
+    "overpromotion_risk",
+    "upstream_axis_distance_px",
+    "axis_distance_term",
+    "gap_score",
+    "support_density",
+    "aspect_ratio_log",
+    "slenderness_score",
+    "blocking_score",
+    "ambiguous_score",
+    "collective_member_score",
+    "orientation_horizontal",
+    "orientation_vertical",
+    "near_upstream_score"
+  ],
+  "train_config": {
+    "version": "MODULE_C1_CAL_V1_TRAINABLE_RESIDUAL_HYPOTHESIS_CALIBRATOR",
+    "seed": 3510,
+    "epochs": 1800,
+    "learning_rate": 0.08,
+    "l2": 0.001
+  },
+  "dataset_id": "C1_CAL_V1_RESIDUAL_HYPOTHESIS_DATASET",
+  "train_info": {
+    "class_counts": {
+      "promote_residual_geometry": 128,
+      "keep_context": 57,
+      "reserve_non_geometry": 173
+    },
+    "class_weights": {
+      "promote_residual_geometry": 0.9322916666666666,
+      "keep_context": 2.0935672514619883,
+      "reserve_non_geometry": 0.6897880539499036
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 1.1175944051791475
+      },
+      {
+        "epoch": 10,
+        "loss": 0.3573022393273689
+      },
+      {
+        "epoch": 50,
+        "loss": 0.10139026490942532
+      },
+      {
+        "epoch": 100,
+        "loss": 0.05909199896583609
+      },
+      {
+        "epoch": 500,
+        "loss": 0.020301920752938005
+      },
+      {
+        "epoch": 1000,
+        "loss": 0.015207313878422599
+      },
+      {
+        "epoch": 1800,
+        "loss": 0.013198998986541933
+      }
+    ],
+    "evaluation": {
+      "train": {
+        "count": 358,
+        "accuracy": 1.0,
+        "per_class": {
+          "promote_residual_geometry": {
+            "count": 128,
+            "accuracy": 1.0
+          },
+          "keep_context": {
+            "count": 57,
+            "accuracy": 1.0
+          },
+          "reserve_non_geometry": {
+            "count": 173,
+            "accuracy": 1.0
+          }
+        }
+      },
+      "validation": {
+        "count": 72,
+        "accuracy": 1.0,
+        "per_class": {
+          "promote_residual_geometry": {
+            "count": 21,
+            "accuracy": 1.0
+          },
+          "keep_context": {
+            "count": 34,
+            "accuracy": 1.0
+          },
+          "reserve_non_geometry": {
+            "count": 17,
+            "accuracy": 1.0
+          }
+        }
+      },
+      "holdout": {
+        "count": 81,
+        "accuracy": 1.0,
+        "per_class": {
+          "promote_residual_geometry": {
+            "count": 49,
+            "accuracy": 1.0
+          },
+          "keep_context": {
+            "count": 1,
+            "accuracy": 1.0
+          },
+          "reserve_non_geometry": {
+            "count": 31,
+            "accuracy": 1.0
+          }
+        }
+      }
+    }
+  },
+  "truth_usage_policy": "Truth labels are used only for training, validation, holdout evaluation, and audit.",
+  "runtime_prohibitions": {
+    "does_not_modify_c1": true,
+    "does_not_modify_v3_4_2": true,
+    "does_not_create_final_geometry": true,
+    "no_ocr": true,
+    "no_clinical_semantics": true
+  }
+}

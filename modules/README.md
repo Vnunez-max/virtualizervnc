@@ -32,6 +32,18 @@ The X3.0 trainable-aware evidence unit is kept at:
 modules/x3/module_x3_0_trainable_geometric_evidence_unit.py
 ```
 
+Active trainable/calibration entrypoints are:
+
+```text
+modules/g1/module_g1_0_cal_v1_apply_trainable_calibrator.py
+modules/c1/module_c1_cal_v1_apply_residual_hypothesis_calibrator.py
+modules/d1/module_d1_cal_v1_apply_deferred_linear_role_calibrator.py
+```
+
+Dataset/training generators are included as code, but generated datasets and
+training outputs remain outside GitHub unless promoted as small readable model
+assets.
+
 Critical rule:
 
 ```text

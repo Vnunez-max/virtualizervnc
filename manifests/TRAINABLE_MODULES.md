@@ -28,8 +28,9 @@ No module may gain interpretation by losing geometric traceability.
 | Module family | Module | Status | Training scope | Runtime truth labels allowed? | Notes |
 | --- | --- | --- | --- | --- | --- |
 | V3.4.2 | `module_b1_v3_4_2_residual_evidence_stratifier.py` | frozen | none | no | Frozen upstream residual evidence stratifier. Do not modify. |
-| C1.x | `module_c1_0_residual_evidence_geometry_hypothesis_validator.py` | fixed-rule | audit/calibration only if future contract exists | no | Validates residual evidence hypotheses; not a learner today. |
-| C1.x | `module_c1_1_collective_residual_evidence_hypothesis_validator.py` | fixed-rule | audit/calibration only if future contract exists | no | Collective validator; must not invent geometry. |
+| C1.x | `module_c1_0_residual_evidence_geometry_hypothesis_validator.py` | fixed-rule | calibrated by C1-CAL V1 output layer | no | Validates residual evidence hypotheses; functional source for C1-CAL. |
+| C1.x | `module_c1_1_collective_residual_evidence_hypothesis_validator.py` | fixed-rule | calibrated by C1-CAL V1 output layer | no | Collective validator; must not invent geometry. |
+| C1-CAL V1 | `module_c1_cal_v1_apply_residual_hypothesis_calibrator.py` | trainable | residual hypothesis classifier/calibrator | no | Active trainable layer; runtime uses saved readable assets only. |
 | U1.x | `module_u1_1_subobject_clean_grid_geometry_purity_gate.py` | fixed-rule | none by default | no | Purity gate logic. Calibrated by U1.1-CAL, not trained directly. |
 | U1.x | `module_u1_1_cal_geometric_hysteresis_calibrator.py` | calibrable | thresholds/hysteresis from traceable audit data | no | Calibrates geometric gates, not semantics. |
 | L1.x | `module_l1_0_observed_support_domain_stratifier.py` | fixed-rule | none by default | no | Creates observed-domain partition; must preserve observed support. |
@@ -38,8 +39,9 @@ No module may gain interpretation by losing geometric traceability.
 | L1.x | `module_l1_2_cal_deferred_line_like_fragment_calibrator.py` | calibrable | line-like deferred thresholds | no | Calibrates deferred line-like fragments. |
 | G1.x | `module_g1_0_deferred_line_family_resolver.py` | fixed-rule | feature generation/scoring audit | no | Creates component-family feature space; model is in G1.0-CAL. |
 | G1.x | `module_g1_0_cal_v1_apply_trainable_calibrator.py` | trainable | component + family candidate classifier/calibrator | no | Main trainable module. Runtime uses saved model assets only. |
-| D1.x | `module_d1_0_deferred_simple_linearity_auditor.py` | fixed-rule | future D1-CAL possible | no | Reality-first simple lineality auditor. |
-| D1.x | `module_d1_1_deferred_linear_role_classifier.py` | fixed-rule/calibrable candidate | future role calibration possible | no | Can become calibrable with contract; currently fixed role classifier. |
+| D1.x | `module_d1_0_deferred_simple_linearity_auditor.py` | fixed-rule | calibrated by D1-CAL V1 output layer | no | Reality-first simple lineality auditor. |
+| D1.x | `module_d1_1_deferred_linear_role_classifier.py` | fixed-rule | calibrated by D1-CAL V1 output layer | no | Functional role source for D1-CAL. |
+| D1-CAL V1 | `module_d1_cal_v1_apply_deferred_linear_role_calibrator.py` | trainable | deferred linear role classifier/calibrator | no | Active trainable layer; runtime uses saved readable assets only. |
 | Unit | `module_unit_full_model_v1_apply.py` | fusion/orchestrator | none | no | Applies module chain; must not become black-box training target. |
 | X2.0 | `module_x2_0_geometric_evidence_fusion_single_script.py` | fusion/orchestrator | none by default | no | Experimental single-script fusion; consumes module evidence, not truth labels. |
 | X3.0 | `module_x3_0_trainable_geometric_evidence_unit.py` | trainable-aware fusion/orchestrator | none as monolith | no | Consumes active trainable/calibrable outputs and writes trainable influence maps. |
@@ -50,6 +52,8 @@ Strictly trainable today:
 
 ```text
 G1.0-CAL V1
+C1-CAL V1
+D1-CAL V1
 ```
 
 Calibrable today:
@@ -70,11 +74,14 @@ D1.0
 D1.1
 ```
 
-Reserved for future calibration, not runtime-active as trainable models yet:
+Dataset/training generators for active trainable modules exist but generated
+datasets remain outside the repo:
 
 ```text
-D1-CAL
-C1-CAL
+module_c1_cal_v1_residual_hypothesis_dataset.py
+module_c1_cal_v1_train_residual_hypothesis_calibrator.py
+module_d1_cal_v1_deferred_linear_role_dataset.py
+module_d1_cal_v1_train_deferred_linear_role_calibrator.py
 ```
 
 Frozen or non-trainable:

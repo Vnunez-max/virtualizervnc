@@ -35,6 +35,7 @@ CLASS_D1_BORDER_OR_LAYOUT = 6
 CLASS_D1_CURVE_OR_TRACE = 7
 CLASS_D1_AMBIGUOUS = 8
 CLASS_UNACCOUNTED = 9
+CLASS_C1_CAL_RESIDUAL_GEOMETRY = 10
 
 CLASS_NAMES = {
     CLASS_BACKGROUND: "background",
@@ -47,6 +48,7 @@ CLASS_NAMES = {
     CLASS_D1_CURVE_OR_TRACE: "d1_curve_or_data_trace",
     CLASS_D1_AMBIGUOUS: "d1_ambiguous_linear",
     CLASS_UNACCOUNTED: "unaccounted_observed",
+    CLASS_C1_CAL_RESIDUAL_GEOMETRY: "c1_cal_residual_geometry_evidence",
 }
 
 CLASS_COLORS = {
@@ -60,6 +62,7 @@ CLASS_COLORS = {
     CLASS_D1_CURVE_OR_TRACE: (50, 220, 155),
     CLASS_D1_AMBIGUOUS: (220, 220, 220),
     CLASS_UNACCOUNTED: (255, 255, 255),
+    CLASS_C1_CAL_RESIDUAL_GEOMETRY: (255, 118, 210),
 }
 
 SOURCE_BITS = {
@@ -72,6 +75,10 @@ SOURCE_BITS = {
     "x3_fusion": 64,
     "c1_0_functional_evidence": 128,
     "c1_1_functional_evidence": 256,
+    "c1_cal_v1_trainable_candidate": 512,
+    "c1_cal_v1_changed_decision": 1024,
+    "d1_cal_v1_trainable_candidate": 2048,
+    "d1_cal_v1_changed_decision": 4096,
 }
 
 G1_ACTION_NAMES = {
@@ -279,6 +286,10 @@ def run(
     sample_id: str = "sample",
     c1_0_dir: Optional[Path] = None,
     c1_1_dir: Optional[Path] = None,
+    c1_cal_dir: Optional[Path] = None,
+    d1_cal_dir: Optional[Path] = None,
+    c1_cal_model_dir: Optional[Path] = None,
+    d1_cal_model_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     unit_maps = maps_dir(unit_dir)
     g1_maps = maps_dir(g1_cal_dir)
@@ -291,7 +302,11 @@ def run(
     for path in (map_out, table_out, visual_out):
         ensure_dir(path)
 
-    model_audit = verify_model_assets(Path(model_dir))
+    model_audit = {"g1_0_cal_v1": verify_model_assets(Path(model_dir))}
+    if c1_cal_model_dir is not None:
+        model_audit["c1_cal_v1"] = verify_model_assets(Path(c1_cal_model_dir))
+    if d1_cal_model_dir is not None:
+        model_audit["d1_cal_v1"] = verify_model_assets(Path(d1_cal_model_dir))
 
     observed = load_bool(unit_maps / "unit_observed_support_map.npy")
     unit_line = load_bool(unit_maps / "unit_final_line_study_support_map.npy")
@@ -353,26 +368,89 @@ def run(
     )
     c1_functional_evidence = (c1_0_validated | c1_1_validated) & observed
 
+    c1_cal_candidate, c1_cal_supplied, c1_cal_candidate_source = load_optional_bool(
+        c1_cal_dir,
+        "maps/c1_cal_v1_candidate_map.npy",
+        shape,
+    )
+    c1_cal_promoted, _, c1_cal_promoted_source = load_optional_bool(
+        c1_cal_dir,
+        "maps/c1_cal_v1_promoted_residual_geometry_map.npy",
+        shape,
+    )
+    c1_cal_reserved, _, _ = load_optional_bool(
+        c1_cal_dir,
+        "maps/c1_cal_v1_reserved_non_geometry_map.npy",
+        shape,
+    )
+    c1_cal_changed, _, _ = load_optional_bool(
+        c1_cal_dir,
+        "maps/c1_cal_v1_changed_decision_map.npy",
+        shape,
+    )
+
+    d1_cal_candidate, d1_cal_supplied, d1_cal_candidate_source = load_optional_bool(
+        d1_cal_dir,
+        "maps/d1_cal_v1_candidate_map.npy",
+        shape,
+    )
+    d1_cal_changed, _, _ = load_optional_bool(
+        d1_cal_dir,
+        "maps/d1_cal_v1_changed_decision_map.npy",
+        shape,
+    )
+    d1_cal_role = d1_role
+    d1_cal_confidence = d1_confidence
+    d1_cal_grid = d1_grid
+    d1_cal_text = d1_text
+    d1_cal_tick = d1_tick
+    d1_cal_border = d1_border
+    d1_cal_curve = d1_curve
+    d1_cal_ambiguous = d1_ambiguous
+    if d1_cal_supplied and d1_cal_dir is not None:
+        d1_cal_role = load_map(Path(d1_cal_dir) / "maps/d1_cal_v1_role_class_map.npy").astype(np.uint8)
+        d1_cal_confidence = load_map(Path(d1_cal_dir) / "maps/d1_cal_v1_role_confidence_map.npy").astype(np.float32)
+        d1_cal_grid = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_grid_line_candidate_map.npy")
+        d1_cal_text = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_text_or_digit_stroke_map.npy")
+        d1_cal_tick = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_tick_or_scale_mark_map.npy")
+        d1_cal_border = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_page_border_or_layout_box_map.npy")
+        d1_cal_curve = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_curve_or_data_trace_map.npy")
+        d1_cal_ambiguous = load_bool(Path(d1_cal_dir) / "maps/d1_cal_v1_ambiguous_linear_map.npy")
+        check_same_shape({
+            "observed": observed,
+            "d1_cal_role": d1_cal_role,
+            "d1_cal_confidence": d1_cal_confidence,
+            "d1_cal_grid": d1_cal_grid,
+            "d1_cal_text": d1_cal_text,
+            "d1_cal_tick": d1_cal_tick,
+            "d1_cal_border": d1_cal_border,
+            "d1_cal_curve": d1_cal_curve,
+            "d1_cal_ambiguous": d1_cal_ambiguous,
+        })
+
     trainable_changed = g1_candidate & np.isin(g1_action, [2, 3, 4])
     trainable_influence = g1_candidate & observed
     trainable_line_support = g1_promoted & observed
 
-    d1_grid_added = d1_grid & observed & ~unit_line
-    x3_line = (unit_line | d1_grid_added) & observed
-    d1_reserved_future = (d1_text | d1_tick | d1_border | d1_curve | d1_ambiguous) & observed & ~x3_line
-    x3_future = (unit_future | g1_future | d1_reserved_future | (g1_deferred & observed & ~x3_line)) & observed & ~x3_line
+    c1_cal_line_added = c1_cal_promoted & observed & ~unit_line
+    d1_grid_added = d1_cal_grid & observed & ~unit_line & ~c1_cal_line_added
+    x3_line = (unit_line | c1_cal_line_added | d1_grid_added) & observed
+    d1_reserved_future = (d1_cal_text | d1_cal_tick | d1_cal_border | d1_cal_curve | d1_cal_ambiguous) & observed & ~x3_line
+    c1_reserved_future = c1_cal_reserved & observed & ~x3_line
+    x3_future = (unit_future | g1_future | d1_reserved_future | c1_reserved_future | (g1_deferred & observed & ~x3_line)) & observed & ~x3_line
     x3_accounted = x3_line | x3_future
     x3_unaccounted = observed & ~x3_accounted
 
     class_map = np.zeros(shape, dtype=np.uint8)
     class_map[observed] = CLASS_UNACCOUNTED
     class_map[x3_future] = CLASS_FUTURE_POOL
-    class_map[d1_text & observed & ~x3_line] = CLASS_D1_TEXT_OR_DIGIT
-    class_map[d1_tick & observed & ~x3_line] = CLASS_D1_TICK_OR_SCALE
-    class_map[d1_border & observed & ~x3_line] = CLASS_D1_BORDER_OR_LAYOUT
-    class_map[d1_curve & observed & ~x3_line] = CLASS_D1_CURVE_OR_TRACE
-    class_map[d1_ambiguous & observed & ~x3_line] = CLASS_D1_AMBIGUOUS
+    class_map[d1_cal_text & observed & ~x3_line] = CLASS_D1_TEXT_OR_DIGIT
+    class_map[d1_cal_tick & observed & ~x3_line] = CLASS_D1_TICK_OR_SCALE
+    class_map[d1_cal_border & observed & ~x3_line] = CLASS_D1_BORDER_OR_LAYOUT
+    class_map[d1_cal_curve & observed & ~x3_line] = CLASS_D1_CURVE_OR_TRACE
+    class_map[d1_cal_ambiguous & observed & ~x3_line] = CLASS_D1_AMBIGUOUS
     class_map[unit_line & observed] = CLASS_UNIT_LINE_STUDY
+    class_map[c1_cal_line_added] = CLASS_C1_CAL_RESIDUAL_GEOMETRY
     class_map[d1_grid_added] = CLASS_D1_GRID_LINE
     class_map[x3_unaccounted] = CLASS_UNACCOUNTED
 
@@ -387,6 +465,10 @@ def run(
         ("x3_fusion", x3_accounted),
         ("c1_0_functional_evidence", c1_0_validated),
         ("c1_1_functional_evidence", c1_1_validated),
+        ("c1_cal_v1_trainable_candidate", c1_cal_candidate),
+        ("c1_cal_v1_changed_decision", c1_cal_changed),
+        ("d1_cal_v1_trainable_candidate", d1_cal_candidate),
+        ("d1_cal_v1_changed_decision", d1_cal_changed),
     ]:
         source_bit[mask & observed] |= SOURCE_BITS[name]
 
@@ -394,6 +476,8 @@ def run(
     trainable_influence_code[trainable_influence] = 1
     trainable_influence_code[trainable_changed] = 2
     trainable_influence_code[trainable_line_support] = np.maximum(trainable_influence_code[trainable_line_support], 3)
+    trainable_influence_code[c1_cal_candidate & observed] = np.maximum(trainable_influence_code[c1_cal_candidate & observed], 4)
+    trainable_influence_code[d1_cal_candidate & observed] = np.maximum(trainable_influence_code[d1_cal_candidate & observed], 5)
 
     np.save(map_out / "x3_observed_support_map.npy", observed.astype(np.uint8))
     np.save(map_out / "x3_unit_line_study_support_map.npy", unit_line.astype(np.uint8))
@@ -407,8 +491,13 @@ def run(
     np.save(map_out / "x3_source_bit_map.npy", source_bit.astype(np.uint16))
     np.save(map_out / "x3_d1_role_class_map.npy", d1_role.astype(np.uint8))
     np.save(map_out / "x3_d1_role_confidence_map.npy", d1_confidence.astype(np.float32))
+    np.save(map_out / "x3_d1_active_role_class_map.npy", d1_cal_role.astype(np.uint8))
+    np.save(map_out / "x3_d1_active_role_confidence_map.npy", d1_cal_confidence.astype(np.float32))
     np.save(map_out / "x3_d1_hypothesis_id_map.npy", d1_hypothesis.astype(np.int32))
     np.save(map_out / "x3_c1_functional_evidence_map.npy", c1_functional_evidence.astype(np.uint8))
+    np.save(map_out / "x3_c1_cal_v1_promoted_map.npy", c1_cal_promoted.astype(np.uint8))
+    np.save(map_out / "x3_c1_cal_v1_changed_decision_map.npy", c1_cal_changed.astype(np.uint8))
+    np.save(map_out / "x3_d1_cal_v1_changed_decision_map.npy", d1_cal_changed.astype(np.uint8))
 
     class_rows = build_class_rows(class_map, observed)
     write_csv(table_out / "x3_fused_class_summary.csv", class_rows, [
@@ -455,22 +544,22 @@ def run(
             "model_dir": "",
         },
         {
-            "layer_key": "c1_cal_future",
-            "status": "reserved_trainable_slot_not_runtime_active",
-            "scope": "future_residual_geometry_hypothesis_calibration",
+            "layer_key": "c1_cal_v1",
+            "status": "active_trainable_runtime_asset" if c1_cal_model_dir is not None else "available_trainable_layer_not_supplied",
+            "scope": "residual_geometry_hypothesis_calibration",
             "runtime_truth_labels_allowed": False,
             "candidate_pixels": count(c1_functional_evidence),
-            "changed_decision_pixels": 0,
-            "model_dir": "",
+            "changed_decision_pixels": count(c1_cal_changed & observed),
+            "model_dir": str(c1_cal_model_dir) if c1_cal_model_dir is not None else "",
         },
         {
-            "layer_key": "d1_cal_future",
-            "status": "reserved_trainable_slot_not_runtime_active",
-            "scope": "future_deferred_role_calibration",
+            "layer_key": "d1_cal_v1",
+            "status": "active_trainable_runtime_asset" if d1_cal_model_dir is not None else "available_trainable_layer_not_supplied",
+            "scope": "deferred_linear_role_calibration",
             "runtime_truth_labels_allowed": False,
             "candidate_pixels": count(d1_candidate & observed),
-            "changed_decision_pixels": 0,
-            "model_dir": "",
+            "changed_decision_pixels": count(d1_cal_changed & observed),
+            "model_dir": str(d1_cal_model_dir) if d1_cal_model_dir is not None else "",
         },
     ]
     write_csv(table_out / "x3_trainable_layers.csv", trainable_rows, [
@@ -539,11 +628,15 @@ def run(
     bool_rgb(trainable_influence, (84, 255, 180)).save(visual_out / "04_x3_trainable_g1_influence.png")
     bool_rgb(d1_grid_added, (255, 214, 64)).save(visual_out / "05_x3_d1_grid_added.png")
     bool_rgb(c1_functional_evidence, (255, 118, 210)).save(visual_out / "06_x3_c1_functional_evidence.png")
+    bool_rgb(c1_cal_line_added, (255, 118, 210)).save(visual_out / "09_x3_c1_cal_added.png")
+    bool_rgb(d1_cal_changed & observed, (255, 255, 80)).save(visual_out / "10_x3_d1_cal_changed.png")
     influence_rgb = np.zeros((*shape, 3), dtype=np.uint8)
     influence_rgb[:, :] = (16, 16, 16)
     influence_rgb[trainable_influence_code == 1] = (84, 180, 255)
     influence_rgb[trainable_influence_code == 2] = (255, 214, 64)
     influence_rgb[trainable_influence_code == 3] = (84, 255, 180)
+    influence_rgb[trainable_influence_code == 4] = (255, 118, 210)
+    influence_rgb[trainable_influence_code == 5] = (255, 255, 80)
     Image.fromarray(influence_rgb, mode="RGB").save(visual_out / "07_x3_trainable_influence_codes.png")
     make_contact_sheet([
         ("X3 fused class overlay", overlay),
@@ -553,6 +646,8 @@ def run(
         ("D1 grid-line additions", Image.open(visual_out / "05_x3_d1_grid_added.png")),
         ("C1 functional evidence", Image.open(visual_out / "06_x3_c1_functional_evidence.png")),
         ("Trainable influence codes", Image.open(visual_out / "07_x3_trainable_influence_codes.png")),
+        ("C1-CAL added evidence", Image.open(visual_out / "09_x3_c1_cal_added.png")),
+        ("D1-CAL changed decisions", Image.open(visual_out / "10_x3_d1_cal_changed.png")),
     ], visual_out / "08_x3_audit_summary.png")
 
     counts = {
@@ -564,9 +659,15 @@ def run(
         "g1_0_cal_v1_promoted_pixels": count(g1_promoted & observed),
         "d1_0_simple_linearity_candidate_pixels": count(d1_candidate & observed),
         "d1_1_grid_line_candidate_pixels": count(d1_grid & observed),
+        "d1_active_grid_line_candidate_pixels": count(d1_cal_grid & observed),
         "c1_0_functional_evidence_pixels": count(c1_0_validated & observed),
         "c1_1_functional_evidence_pixels": count(c1_1_validated & observed),
         "c1_functional_evidence_pixels": count(c1_functional_evidence),
+        "c1_cal_v1_candidate_pixels": count(c1_cal_candidate & observed),
+        "c1_cal_v1_changed_decision_pixels": count(c1_cal_changed & observed),
+        "c1_cal_v1_added_pixels": count(c1_cal_line_added),
+        "d1_cal_v1_candidate_pixels": count(d1_cal_candidate & observed),
+        "d1_cal_v1_changed_decision_pixels": count(d1_cal_changed & observed),
         "x3_d1_grid_line_added_pixels": count(d1_grid_added),
         "x3_fused_line_study_support_pixels": count(x3_line),
         "x3_fused_future_module_pool_pixels": count(x3_future),
@@ -579,6 +680,8 @@ def run(
         "trainable_changed_ratio_of_candidate": float(count(trainable_changed) / max(count(g1_candidate & observed), 1)),
         "d1_grid_added_ratio_of_observed": float(count(d1_grid_added) / max(count(observed), 1)),
         "c1_functional_evidence_ratio_of_observed": float(count(c1_functional_evidence) / max(count(observed), 1)),
+        "c1_cal_added_ratio_of_observed": float(count(c1_cal_line_added) / max(count(observed), 1)),
+        "d1_cal_changed_ratio_of_candidate": float(count(d1_cal_changed & observed) / max(count(d1_cal_candidate & observed), 1)),
     }
     invariants = {
         "all_input_maps_same_shape": True,
@@ -588,10 +691,14 @@ def run(
         "d1_grid_added_subset_of_d1_candidate": bool(np.all(~d1_grid_added | d1_candidate)),
         "trainable_influence_subset_of_g1_candidate": bool(np.all(~trainable_influence | g1_candidate)),
         "trainable_changed_subset_of_g1_candidate": bool(np.all(~trainable_changed | g1_candidate)),
+        "c1_cal_added_subset_of_c1_cal_candidate": bool(np.all(~c1_cal_line_added | c1_cal_candidate)),
+        "d1_cal_output_subset_of_d1_candidate": bool(np.all(~(d1_cal_candidate & observed) | d1_candidate)),
         "source_trace_for_all_x3_line_pixels": bool(np.all(source_bit[x3_line] > 0)),
         "source_trace_for_all_x3_future_pixels": bool(np.all(source_bit[x3_future] > 0)),
         "c1_functional_evidence_subset_of_observed": bool(np.all(~c1_functional_evidence | observed)),
-        "g1_trainable_model_assets_readable": bool(model_audit["assets_readable"]),
+        "g1_trainable_model_assets_readable": bool(model_audit["g1_0_cal_v1"]["assets_readable"]),
+        "c1_cal_model_assets_readable_when_supplied": bool(c1_cal_model_dir is None or model_audit["c1_cal_v1"]["assets_readable"]),
+        "d1_cal_model_assets_readable_when_supplied": bool(d1_cal_model_dir is None or model_audit["d1_cal_v1"]["assets_readable"]),
         "runtime_truth_labels_not_used": True,
         "does_not_create_final_geometry": True,
         "does_not_modify_upstream_outputs": True,
@@ -607,11 +714,21 @@ def run(
         "model_audit": model_audit,
         "trainable_policy": {
             "unit_is_trainable_monolith": False,
-            "active_trainable_runtime_layers": ["g1_0_cal_v1"],
+            "active_trainable_runtime_layers": [
+                name
+                for name, active in [
+                    ("g1_0_cal_v1", True),
+                    ("c1_cal_v1", c1_cal_model_dir is not None),
+                    ("d1_cal_v1", d1_cal_model_dir is not None),
+                ]
+                if active
+            ],
             "active_functional_layers": ["c1_0", "c1_1", "d1_0", "d1_1"],
             "calibrable_upstream_layers": ["u1_1_cal", "l1_1", "l1_2_cal"],
-            "reserved_trainable_slots_not_runtime_active": ["c1_cal_future", "d1_cal_future"],
+            "reserved_trainable_slots_not_runtime_active": [],
             "runtime_truth_labels_allowed": False,
+            "c1_cal_outputs_supplied": c1_cal_supplied,
+            "d1_cal_outputs_supplied": d1_cal_supplied,
         },
         "outputs": {
             "maps_dir": "maps",
@@ -639,6 +756,8 @@ def run(
                 "x3_fused_future_module_pool_pixels": counts["x3_fused_future_module_pool_pixels"],
                 "g1_0_cal_v1_changed_decision_pixels": counts["g1_0_cal_v1_changed_decision_pixels"],
                 "c1_functional_evidence_pixels": counts["c1_functional_evidence_pixels"],
+                "c1_cal_v1_added_pixels": counts["c1_cal_v1_added_pixels"],
+                "d1_cal_v1_changed_decision_pixels": counts["d1_cal_v1_changed_decision_pixels"],
                 "x3_d1_grid_line_added_pixels": counts["x3_d1_grid_line_added_pixels"],
                 "invariants_pass": all(invariants.values()),
             },
@@ -660,6 +779,10 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--sample-id", default="sample")
     ap.add_argument("--c1-0-dir", default=None)
     ap.add_argument("--c1-1-dir", default=None)
+    ap.add_argument("--c1-cal-dir", default=None)
+    ap.add_argument("--d1-cal-dir", default=None)
+    ap.add_argument("--c1-cal-model-dir", default=None)
+    ap.add_argument("--d1-cal-model-dir", default=None)
     return ap.parse_args()
 
 
@@ -675,6 +798,10 @@ def main() -> None:
         sample_id=args.sample_id,
         c1_0_dir=Path(args.c1_0_dir) if args.c1_0_dir else None,
         c1_1_dir=Path(args.c1_1_dir) if args.c1_1_dir else None,
+        c1_cal_dir=Path(args.c1_cal_dir) if args.c1_cal_dir else None,
+        d1_cal_dir=Path(args.d1_cal_dir) if args.d1_cal_dir else None,
+        c1_cal_model_dir=Path(args.c1_cal_model_dir) if args.c1_cal_model_dir else None,
+        d1_cal_model_dir=Path(args.d1_cal_model_dir) if args.d1_cal_model_dir else None,
     )
 
 

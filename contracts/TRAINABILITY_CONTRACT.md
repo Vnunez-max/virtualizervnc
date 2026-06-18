@@ -59,10 +59,12 @@ L1.2-CAL
 
 Trainable modules may learn a small explicit model from traceable features.
 
-Current trainable module:
+Current trainable modules:
 
 ```text
 G1.0-CAL V1
+C1-CAL V1
+D1-CAL V1
 ```
 
 ### Fusion/Orchestrator
@@ -155,4 +157,29 @@ collapses component/family identity
 creates final geometry prematurely
 modifies frozen V3.4.2
 turns X2.0 or X3.0 into an untraceable black box
+```
+
+## Active CAL Dataset Boundary
+
+C1-CAL V1 and D1-CAL V1 include dataset generators and training scripts in
+the repo, but generated datasets are not runtime artifacts and are not committed
+to GitHub.
+
+Runtime may consume only:
+
+```text
+upstream module outputs
+readable model assets
+explicit feature tables/maps from runtime modules
+```
+
+Runtime may not consume:
+
+```text
+dataset_manifest.json
+dataset_audit.json
+truth maps
+label CSVs
+holdout labels
+manual visual corrections
 ```

@@ -32,9 +32,11 @@ every trained decision must be traceable to pixels/components/families
 ```text
 UNIT outputs
   + C1.0/C1.1 residual geometry evidence when supplied
+  + C1-CAL V1 residual hypothesis calibration when supplied
   + G1.0-CAL V1 trainable outputs
   + D1.0 simple lineality
   + D1.1 role classification
+  + D1-CAL V1 role calibration when supplied
   + readable trained assets
   -> X3.0 trainable-aware fusion
 ```
@@ -44,6 +46,8 @@ UNIT outputs
 | Layer | Status | Runtime role | Runtime truth labels |
 | --- | --- | --- | --- |
 | G1.0-CAL V1 | active trainable | component-family candidate calibration | forbidden |
+| C1-CAL V1 | active trainable | residual hypothesis calibration | forbidden |
+| D1-CAL V1 | active trainable | deferred linear role calibration | forbidden |
 
 ## Active Functional Modules
 
@@ -66,8 +70,6 @@ UNIT outputs
 
 | Slot | Status | Required before runtime activation |
 | --- | --- | --- |
-| D1-CAL | reserved, not runtime-active | contract, dataset, features, evaluation, readable assets |
-| C1-CAL | reserved, not runtime-active | contract, dataset, features, evaluation, readable assets |
 | U/L extended calibrators | reserved, not runtime-active | contract, dataset boundary, runtime safety audit |
 
 ## X3 Module
@@ -86,12 +88,18 @@ contracts/CONTRACT_X3_0_TRAINABLE_GEOMETRIC_EVIDENCE_UNIT.md
 
 ## Required Runtime Assets
 
-Current active trained asset:
+Current active trained assets:
 
 ```text
 models/g1_0_cal_v1_deferred_family/model_config.json
 models/g1_0_cal_v1_deferred_family/feature_scaler.json
 models/g1_0_cal_v1_deferred_family/coefficients.csv
+models/c1_cal_v1_residual_hypothesis/model_config.json
+models/c1_cal_v1_residual_hypothesis/feature_scaler.json
+models/c1_cal_v1_residual_hypothesis/coefficients.csv
+models/d1_cal_v1_deferred_linear_role/model_config.json
+models/d1_cal_v1_deferred_linear_role/feature_scaler.json
+models/d1_cal_v1_deferred_linear_role/coefficients.csv
 ```
 
 ## Acceptance
@@ -100,7 +108,7 @@ X3.0 is accepted only when:
 
 ```text
 all X3 invariants pass
-G1.0-CAL assets are readable
+G1.0-CAL, C1-CAL and D1-CAL assets are readable
 trainable influence maps are written
 source-bit maps are written
 visual audit exists

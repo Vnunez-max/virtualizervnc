@@ -15,9 +15,11 @@ X3.0 consumes:
 ```text
 unit full-model outputs
 C1.0/C1.1 residual geometry evidence when supplied
+C1-CAL V1 trainable residual hypothesis outputs when supplied
 G1.0-CAL V1 trainable outputs
 D1.0 deferred simple-linearity outputs
 D1.1 deferred linear role outputs
+D1-CAL V1 trainable role outputs when supplied
 readable trained model assets
 ```
 
@@ -56,10 +58,12 @@ modules, datasets, contracts, or runtime maps.
 
 The full X3.0 unit is not trainable as a monolith.
 
-Active trainable runtime layer:
+Active trainable runtime layers:
 
 ```text
 G1.0-CAL V1
+C1-CAL V1
+D1-CAL V1
 ```
 
 Active calibrable upstream layers:
@@ -73,14 +77,13 @@ L1.2-CAL
 Inactive future trainable/calibrable slots:
 
 ```text
-D1-CAL
-C1-CAL
 U/L threshold calibrators beyond current contracts
 ```
 
-C1 and D1 themselves are active functional layers. Only their future trainable
-CAL variants are reserved until they have their own contracts, datasets,
-evaluation reports, readable runtime assets, and visual audits.
+C1 and D1 themselves are active functional layers. C1-CAL V1 and D1-CAL V1
+are active trainable layers with their own contracts, dataset generators,
+training scripts, readable runtime assets, and visual audits. Generated
+datasets remain outside the runtime repo and are never runtime inputs.
 
 ## Required Inputs
 
@@ -96,12 +99,19 @@ python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
   --out /path/to/x3_out \
   --sample-id sample_id \
   --c1-0-dir /optional/path/to/c1_0_out \
-  --c1-1-dir /optional/path/to/c1_1_out
+  --c1-1-dir /optional/path/to/c1_1_out \
+  --c1-cal-dir /optional/path/to/c1_cal_v1_out \
+  --d1-cal-dir /optional/path/to/d1_cal_v1_out \
+  --c1-cal-model-dir models/c1_cal_v1_residual_hypothesis \
+  --d1-cal-model-dir models/d1_cal_v1_deferred_linear_role
 ```
 
 Optional C1 inputs are active functional evidence when supplied. They are
 optional because earlier promoted smoke runs did not always materialize C1
 folders, and X3 must remain portable over the current functional unit.
+
+Optional C1-CAL and D1-CAL inputs are active trainable evidence when supplied.
+If D1-CAL is not supplied, X3 falls back to fixed-rule D1.1 roles.
 
 Required unit maps:
 
@@ -158,9 +168,15 @@ collective_validated_observed_support_map.npy
 Required readable model assets:
 
 ```text
-model_config.json
-feature_scaler.json
-coefficients.csv
+models/g1_0_cal_v1_deferred_family/model_config.json
+models/g1_0_cal_v1_deferred_family/feature_scaler.json
+models/g1_0_cal_v1_deferred_family/coefficients.csv
+models/c1_cal_v1_residual_hypothesis/model_config.json
+models/c1_cal_v1_residual_hypothesis/feature_scaler.json
+models/c1_cal_v1_residual_hypothesis/coefficients.csv
+models/d1_cal_v1_deferred_linear_role/model_config.json
+models/d1_cal_v1_deferred_linear_role/feature_scaler.json
+models/d1_cal_v1_deferred_linear_role/coefficients.csv
 ```
 
 ## Required Outputs
@@ -180,8 +196,13 @@ x3_fused_class_map.npy
 x3_source_bit_map.npy
 x3_d1_role_class_map.npy
 x3_d1_role_confidence_map.npy
+x3_d1_active_role_class_map.npy
+x3_d1_active_role_confidence_map.npy
 x3_d1_hypothesis_id_map.npy
 x3_c1_functional_evidence_map.npy
+x3_c1_cal_v1_promoted_map.npy
+x3_c1_cal_v1_changed_decision_map.npy
+x3_d1_cal_v1_changed_decision_map.npy
 ```
 
 Tables:
@@ -205,6 +226,8 @@ Visuals:
 06_x3_c1_functional_evidence.png
 07_x3_trainable_influence_codes.png
 08_x3_audit_summary.png
+09_x3_c1_cal_added.png
+10_x3_d1_cal_changed.png
 ```
 
 Reports:
@@ -222,12 +245,15 @@ X3.0 must:
 load all required maps directly
 verify all input maps share one shape
 verify G1.0-CAL V1 readable model assets exist
+verify C1-CAL V1 and D1-CAL V1 readable model assets when supplied
 derive observed support only from the unit observed map
 start line-study support from the unit line-study map
 register C1.0/C1.1 as active residual functional evidence when supplied
 derive trainable influence from G1.0-CAL V1 candidates/actions
-add D1.1 grid-line candidates only as line-study evidence
-reserve D1.1 non-grid linear roles for future-module pool
+add C1-CAL promoted residual evidence only as line-study evidence
+use D1-CAL roles when supplied, otherwise use D1.1 roles
+add D1 grid-line candidates only as line-study evidence
+reserve D1 non-grid linear roles for future-module pool
 preserve unaccounted observed support explicitly
 write source-bit traceability for fused line and future pixels
 ```
@@ -260,10 +286,14 @@ x3_line_and_future_disjoint == true
 d1_grid_added_subset_of_d1_candidate == true
 trainable_influence_subset_of_g1_candidate == true
 trainable_changed_subset_of_g1_candidate == true
+c1_cal_added_subset_of_c1_cal_candidate == true
+d1_cal_output_subset_of_d1_candidate == true
 source_trace_for_all_x3_line_pixels == true
 source_trace_for_all_x3_future_pixels == true
 c1_functional_evidence_subset_of_observed == true
 g1_trainable_model_assets_readable == true
+c1_cal_model_assets_readable_when_supplied == true
+d1_cal_model_assets_readable_when_supplied == true
 runtime_truth_labels_not_used == true
 does_not_create_final_geometry == true
 does_not_modify_upstream_outputs == true
@@ -288,5 +318,5 @@ V3.4.2 remains frozen
 X3.0 is the trainable-aware complete Geometric Evidence Unit runtime surface.
 
 It is complete in the sense that it integrates the current functional unit,
-current trainable layer, and D1 deferred complement. It is not complete in the
-sense of final document virtualization.
+active trainable G1/C1/D1 calibration layers, and D1 deferred complement. It is
+not complete in the sense of final document virtualization.

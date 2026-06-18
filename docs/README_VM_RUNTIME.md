@@ -10,7 +10,7 @@ No incluye datasets, samples, resultados historicos ni outputs de test.
 
 ```text
 modules/      codigo runtime de la unidad modular
-models/       artefacto entrenado minimo usado por G1.0-CAL V1
+models/       artefactos entrenados minimos usados por G1.0-CAL, C1-CAL y D1-CAL
 contracts/    contratos tecnicos de los modulos incluidos
 docs/         nota arquitectonica D1 como complemento deferred-only
 tools/        verificador de paquete
@@ -58,7 +58,7 @@ La verificacion comprueba:
 ```text
 compilacion de todos los modules/*.py
 import de numpy y Pillow
-presencia del modelo G1.0-CAL V1
+presencia de modelos G1.0-CAL V1, C1-CAL V1 y D1-CAL V1
 ausencia de datasets/samples/resultados historicos en el paquete
 ```
 
@@ -76,9 +76,11 @@ L1.2
 L1.2-CAL
 G1.0
 G1.0-CAL V1
+C1-CAL V1 opcional sobre C1.0/C1.1
 UNIT
 D1.0 opcional sobre deferred
 D1.1 opcional sobre D1.0
+D1-CAL V1 opcional sobre D1.0/D1.1
 X3.0 integracion entrenable-aware
 ```
 
@@ -127,10 +129,34 @@ python modules/d1/module_d1_1_deferred_linear_role_classifier.py \
   --sample-id sample_id
 ```
 
-X3.0 integra la unidad funcional con C1 opcional, G1.0-CAL V1 y D1,
-escribiendo mapas de influencia entrenable sin convertir toda la unidad en
-modelo black-box. C1 y D1 son capas funcionales activas; C1-CAL/D1-CAL son
-solo slots entrenables reservados hasta contrato.
+C1-CAL V1 calibra hipotesis residuales C1.0/C1.1 con un modelo legible. No usa
+truth labels en runtime y no crea geometria final.
+
+```bash
+python modules/c1/module_c1_cal_v1_apply_residual_hypothesis_calibrator.py \
+  --c1-0-dir /ruta/a/c1_0_out \
+  --model-dir models/c1_cal_v1_residual_hypothesis \
+  --out /ruta/a/c1_cal_v1_out \
+  --sample-id sample_id \
+  --c1-1-dir /ruta/opcional/a/c1_1_out
+```
+
+D1-CAL V1 calibra roles lineales D1.0/D1.1 con un modelo legible. No usa truth
+labels en runtime y no crea geometria final.
+
+```bash
+python modules/d1/module_d1_cal_v1_apply_deferred_linear_role_calibrator.py \
+  --d1-0-dir /ruta/a/d1_0_out \
+  --d1-1-dir /ruta/a/d1_1_out \
+  --model-dir models/d1_cal_v1_deferred_linear_role \
+  --out /ruta/a/d1_cal_v1_out \
+  --sample-id sample_id
+```
+
+X3.0 integra la unidad funcional con C1 opcional, G1.0-CAL V1, C1-CAL V1,
+D1, y D1-CAL V1, escribiendo mapas de influencia entrenable sin convertir toda
+la unidad en modelo black-box. C1 y D1 son capas funcionales activas; C1-CAL y
+D1-CAL son capas entrenables activas cuando se suministran sus outputs runtime.
 
 ```bash
 python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
@@ -142,7 +168,11 @@ python modules/x3/module_x3_0_trainable_geometric_evidence_unit.py \
   --out /ruta/a/x3_out \
   --sample-id sample_id \
   --c1-0-dir /ruta/opcional/a/c1_0_out \
-  --c1-1-dir /ruta/opcional/a/c1_1_out
+  --c1-1-dir /ruta/opcional/a/c1_1_out \
+  --c1-cal-dir /ruta/opcional/a/c1_cal_v1_out \
+  --d1-cal-dir /ruta/opcional/a/d1_cal_v1_out \
+  --c1-cal-model-dir models/c1_cal_v1_residual_hypothesis \
+  --d1-cal-model-dir models/d1_cal_v1_deferred_linear_role
 ```
 
 ## Nota sobre inputs

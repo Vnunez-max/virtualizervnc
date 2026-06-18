@@ -68,6 +68,7 @@ See:
 - `docs/GEOMETRIC_EVIDENCE_UNIT_SCOPE.md`
 - `docs/UNIT_MODEL_ERROR_CLEANUP_20260618.md`
 - `docs/X3_0_SMOKE_TEST_20260618.md`
+- `docs/X3_C1_D1_CAL_COMPLETION_20260618.md`
 - `manifests/X3_TRAINABLE_GEOMETRIC_EVIDENCE_UNIT.md`
 - `contracts/CONTRACT_X3_0_TRAINABLE_GEOMETRIC_EVIDENCE_UNIT.md`
 
@@ -76,10 +77,12 @@ See:
 The full system is not a single black-box trainable model. It is a modular
 geometric evidence pipeline with selected trainable/calibrable layers.
 
-Current strict trainable module:
+Current strict trainable modules:
 
 ```text
 G1.0-CAL V1
+C1-CAL V1
+D1-CAL V1
 ```
 
 Current calibrable modules:
@@ -105,9 +108,9 @@ X2.0
 ```
 
 X3.0 is trainable-aware but not a trainable monolith. C1.0/C1.1 and
-D1.0/D1.1 are active functional layers; G1.0-CAL V1 is the active trainable
-layer. Future C1-CAL/D1-CAL slots are reserved until they have contracts,
-datasets and readable runtime assets.
+D1.0/D1.1 are active functional layers. G1.0-CAL V1, C1-CAL V1 and D1-CAL V1
+are active trainable layers with readable assets. C1-CAL/D1-CAL datasets are
+generated outside the repo and are not runtime inputs.
 
 See:
 

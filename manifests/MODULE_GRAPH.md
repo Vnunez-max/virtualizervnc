@@ -26,6 +26,7 @@ V3.4.2
   -> G1.0-CAL V1
   -> D1.0
   -> D1.1
+  -> C1-CAL V1 / D1-CAL V1
   -> X2.0
   -> X3.0
 ```
@@ -64,7 +65,7 @@ Status in X3:
 
 ```text
 C1.0 and C1.1 are active functional evidence layers.
-C1-CAL is only a reserved future trainable slot.
+C1-CAL V1 is an active trainable output layer for C1.0/C1.1 hypotheses.
 ```
 
 Rule:
@@ -151,7 +152,7 @@ Status in X3:
 
 ```text
 D1.0 and D1.1 are active functional evidence layers.
-D1-CAL is only a reserved future trainable slot.
+D1-CAL V1 is an active trainable output layer for D1.0/D1.1 roles.
 ```
 
 Rule:
@@ -192,7 +193,7 @@ Role:
 
 ```text
 combine the functional unit, active C1/D1 functional evidence, active
-trainable G1.0-CAL evidence, trainable influence maps and source-bit
+trainable G1.0-CAL/C1-CAL/D1-CAL evidence, trainable influence maps and source-bit
 traceability
 ```
 
@@ -206,7 +207,7 @@ monolith or create final virtualized geometry
 ## Data Flow Contract
 
 ```text
-upstream maps -> observed universe -> stratified domains -> calibrated deferred decisions -> fused study support -> trainable-aware X3 evidence
+upstream maps -> observed universe -> stratified domains -> calibrated residual/deferred decisions -> fused study support -> trainable-aware X3 evidence
 ```
 
 This data flow ends at auditable support maps. It does not create final
